@@ -23,6 +23,10 @@
 
         <service android:name=".GPS_Service" />
 
+        <activity
+            android:name=".RunAnalysis"
+            android:label="@string/title_activity_run_analysis"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

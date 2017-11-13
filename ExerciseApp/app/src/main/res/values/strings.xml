@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ExerciseApp</string>
+    <string name="title_activity_run_analysis">RunAnalysis</string>
 </resources>

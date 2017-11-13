@@ -39,6 +39,7 @@ public class RunTracker extends AppCompatActivity {
     private double previousAltitude;
     private long previousTime;
     private long firstTime;
+    private double averageSpeed;
 
     long startTime = 0;
 
@@ -177,7 +178,8 @@ public class RunTracker extends AppCompatActivity {
         for (double a : speeds) {
             System.out.print(a + "m/s, ");
         }
-        System.out.println("\nAverage speed: " + (distance / runTime) + " m/sec");
+        averageSpeed = distance / runTime;
+        System.out.println("\nAverage speed: " + averageSpeed + " m/sec");
     }
 
     private long getSecondsFromTime(String time) {
@@ -211,13 +213,15 @@ public class RunTracker extends AppCompatActivity {
                     String time = timerTextView.getText().toString();
                     long timeInSeconds = getSecondsFromTime(time);
                     System.out.println("Time Seconds: " + timeInSeconds);
-                    if (timeInSeconds > 30) {
+                    // if time < X seconds don't bother analysing
+                    if (timeInSeconds > 1) {
                         calculateExerciseInfo(timeInSeconds);
+                        PointsReward pr = new PointsReward();
+                        pr.show(fragmentManager, "tag");
                     }
 
-                    PointsReward pr = new PointsReward();
-                    pr.show(fragmentManager, "tag");
-
+                    textView.setText("");
+                    timerTextView.setText("00:00:00");
                     button.setText("Start");
                     running = false;
                 }
@@ -227,13 +231,24 @@ public class RunTracker extends AppCompatActivity {
     }
 
     private boolean verifyRuntimePermissions() {
-        if(Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if (Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
 
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},100);
 
             return true;
         }
         return false;
+    }
+
+    protected void createAnalysisActivity() {
+        Intent myIntent = new Intent(RunTracker.this, RunAnalysis.class);
+        myIntent.putExtra("DISTANCE", distance);
+        myIntent.putExtra("ALTITUDES", altitudes);
+        myIntent.putExtra("SPEEDS", speeds);
+        myIntent.putExtra("AVERAGE_SPEED", averageSpeed);
+        RunTracker.this.startActivity(myIntent);
     }
 
 
