@@ -23,7 +23,6 @@ import java.util.ArrayList;
 public class RunTracker extends AppCompatActivity {
 
     private Button button;
-    private TextView textView;
     private BroadcastReceiver broadcastReceiver;
     private TextView timerTextView;
     private boolean running;
@@ -40,6 +39,11 @@ public class RunTracker extends AppCompatActivity {
     private long previousTime;
     private long firstTime;
     private double averageSpeed;
+
+    private double highestAltitude;
+    private double lowestAltitude;
+    private double highestSpeed;
+    private double lowestSpeed;
 
     long startTime = 0;
 
@@ -64,13 +68,11 @@ public class RunTracker extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_run_tracker);
+        setTitle(R.string.title_activity_run_tracker);
 
         button = (Button) findViewById(R.id.button);
-        textView = (TextView) findViewById(R.id.textView);
         timerTextView = (TextView) findViewById(R.id.timerTextView);
         running = false;
-
-        textView.setMovementMethod(new ScrollingMovementMethod());
 
         timerTextView.setText("00:00:00");
 
@@ -83,6 +85,11 @@ public class RunTracker extends AppCompatActivity {
         previousLatitude = -1;
         previousLongitude = -1;
         previousTime = -1;
+
+        highestAltitude = -1;
+        lowestAltitude = 900000;
+        highestSpeed = -1;
+        lowestSpeed = 900000;
 
         speeds = new ArrayList<>();
         altitudes = new ArrayList<>();
@@ -116,8 +123,25 @@ public class RunTracker extends AppCompatActivity {
                     if (previousTime != -1) {
                         double thisDist = calculateDistance(lat, lon, alt);
                         distance += thisDist;
-                        speeds.add(calculateSpeed(thisDist, epoch));
+                        double speed = calculateSpeed(thisDist, epoch);
+                        speeds.add(speed);
                         altitudes.add(alt);
+
+                        if (alt > highestAltitude) {
+                            highestAltitude = alt;
+                        }
+
+                        if (alt < lowestAltitude) {
+                            lowestAltitude = alt;
+                        }
+
+                        if (speed > highestSpeed) {
+                            highestSpeed = speed;
+                        }
+
+                        if (speed < lowestSpeed) {
+                            lowestSpeed = speed;
+                        }
                     }
                     else {
                         firstTime = epoch;
@@ -127,9 +151,6 @@ public class RunTracker extends AppCompatActivity {
                     previousLongitude = lon;
                     previousAltitude = alt;
                     previousTime = epoch;
-
-                    textView.append(count + " Received location update.\n");
-
                 }
             };
         }
@@ -197,7 +218,7 @@ public class RunTracker extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),GPS_Service.class);
+                Intent i = new Intent(getApplicationContext(),GpsService.class);
 
                 if (!running) {
                     startService(i);
@@ -217,10 +238,12 @@ public class RunTracker extends AppCompatActivity {
                     if (timeInSeconds > 1) {
                         calculateExerciseInfo(timeInSeconds);
                         PointsReward pr = new PointsReward();
+                        Bundle args = new Bundle();
+                        args.putString("points", "Great run! You earned " + calculatePoints() + " points!");
+                        pr.setArguments(args);
                         pr.show(fragmentManager, "tag");
                     }
 
-                    textView.setText("");
                     timerTextView.setText("00:00:00");
                     button.setText("Start");
                     running = false;
@@ -228,6 +251,11 @@ public class RunTracker extends AppCompatActivity {
             }
         });
 
+    }
+
+    private int calculatePoints() {
+        int temp = (int)(distance / averageSpeed);
+        return temp / 20;
     }
 
     private boolean verifyRuntimePermissions() {
@@ -243,11 +271,25 @@ public class RunTracker extends AppCompatActivity {
     }
 
     protected void createAnalysisActivity() {
+        double[] newAlts = new double[altitudes.size()];
+        for (int i = 0; i < newAlts.length; i++) {
+            newAlts[i] = altitudes.get(i);
+        }
+
+        double[] newSpeeds = new double[speeds.size()];
+        for (int i = 0; i < newSpeeds.length; i++) {
+            newSpeeds[i] = speeds.get(i);
+        }
+
         Intent myIntent = new Intent(RunTracker.this, RunAnalysis.class);
         myIntent.putExtra("DISTANCE", distance);
-        myIntent.putExtra("ALTITUDES", altitudes);
-        myIntent.putExtra("SPEEDS", speeds);
+        myIntent.putExtra("ALTITUDES", newAlts);
+        myIntent.putExtra("SPEEDS", newSpeeds);
         myIntent.putExtra("AVERAGE_SPEED", averageSpeed);
+        myIntent.putExtra("TOPALT", highestAltitude);
+        myIntent.putExtra("BOTALT", lowestAltitude);
+        myIntent.putExtra("TOPSPEED", highestSpeed);
+        myIntent.putExtra("BOTSPEED", lowestSpeed);
         RunTracker.this.startActivity(myIntent);
     }
 

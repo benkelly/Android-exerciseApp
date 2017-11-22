@@ -1,17 +1,11 @@
 package com.ucd.pepeclub.exerciseapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.FractionRes;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.GridView;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -22,14 +16,39 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Friends extends AppCompatActivity {
 
+    class Entry {
+        String name;
+        int points;
+
+        Entry(String name, int points) {
+            this.name = name;
+            this.points = points;
+        }
+    }
+
+    public class EntryComparator implements Comparator<Entry> {
+        @Override
+        public int compare(Entry o1, Entry o2) {
+            int a = o1.points;
+            int b = o2.points;
+
+            return a > b ? -1 : a < b ? 1 : 0;
+        }
+    }
+
     private JSONArray friends;
-    private HashMap<String, Integer> points;
-    private ListView listView;
+    private GridView gv;
+    private ArrayList<Entry> points;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +58,6 @@ public class Friends extends AppCompatActivity {
 
         SharedPreferences settings = getSharedPreferences("userInfo",
                 Context.MODE_PRIVATE);
-
-
 
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
@@ -52,35 +69,41 @@ public class Friends extends AppCompatActivity {
                             JSONObject js = (JSONObject) jsonObject.get("friends");
                             friends = (JSONArray) js.get("data");
                             String friendsToString = friends.toString();
-                            points = new HashMap<>();
+                            points = new ArrayList<>();
 
-                            //hard coding values for test
-
-                            points.put("dar", 10);
-                            points.put("slim", -1000);
-                            points.put("al", 1000);
+                            Random r = new Random();
+                            for (int i = 0; i < friends.length(); i++) {
+                                String name = friends.getJSONObject(i).getString("name");
+                                // for the time being use random number as points
+                                // TODO: get points from server
+                                int randomInt = r.nextInt(100);
+                                points.add(new Entry(name, randomInt));
+                            }
 
                             //<------------------------>
                             //send friends string to php to get names and points
                             //fill points hashmap with user and correspondng points
                             //<------------------------>
 
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
-                        String[] items = new String[points.size()];
-                        int count = 0;
-                        for (Map.Entry<String, Integer> entry : points.entrySet()) {
-                            String info = "";
-                            info += entry.getKey() + "\t\t" + entry.getValue() + " points";
-                            items[count++] = info;
+                        Collections.sort(points, new EntryComparator());
+
+                        ArrayList<String> pointsList = new ArrayList<String>();
+                        for (Entry entry : points) {
+                            pointsList.add(entry.name);
+                            pointsList.add("   " + entry.points);
                         }
 
-                        ArrayAdapter adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.friends_listview_layout, items);
-                        listView = findViewById(R.id.friends_listview);
-                        listView.setAdapter(adapter);
+                        gv = (GridView) findViewById(R.id.grid_view);
+                        final ArrayAdapter<String> gridViewArrayAdapter = new ArrayAdapter<String>
+                                (getApplicationContext() ,R.layout.friends_grid, pointsList);
+
+                        // Data bind GridView with ArrayAdapter (String Array elements)
+                        gv.setAdapter(gridViewArrayAdapter);
+
                     }
                 });
             Bundle parameters = new Bundle();

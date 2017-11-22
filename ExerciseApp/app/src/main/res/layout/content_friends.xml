@@ -8,10 +8,44 @@
     tools:context="com.ucd.pepeclub.exerciseapp.Friends"
     tools:showIn="@layout/activity_friends">
 
-    <ListView
-        android:id="@+id/friends_listview"
-        android:layout_width="368dp"
-        android:layout_height="495dp"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp" />
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="165dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="68dp"
+        android:gravity="left"
+        android:text="Name"
+        android:textSize="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="137dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="68dp"
+        android:gravity="left"
+        android:text="Points"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <GridView
+        android:id="@+id/grid_view"
+        android:layout_width="365dp"
+        android:layout_height="448dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:numColumns="2"
+        android:paddingTop="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.0" />
 </android.support.constraint.ConstraintLayout>

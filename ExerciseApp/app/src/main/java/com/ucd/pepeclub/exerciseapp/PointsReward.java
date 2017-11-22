@@ -11,7 +11,8 @@ public class PointsReward extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setCancelable(false);
-        builder.setMessage("Great run! You earned X points!")
+        Bundle mArgs = getArguments();
+        builder.setMessage(mArgs.getString("points"))
                 .setPositiveButton("Show Analysis", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // launch new activity with analysis

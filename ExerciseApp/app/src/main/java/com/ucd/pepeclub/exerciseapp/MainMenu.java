@@ -20,6 +20,7 @@ public class MainMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        setTitle(R.string.title_activity_main_menu);
 
         toFriendsMenu = findViewById(R.id.friends_button);
         toRunTracker = findViewById(R.id.runTracker_button);

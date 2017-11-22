@@ -12,7 +12,7 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 
-public class GPS_Service extends Service {
+public class GpsService extends Service {
 
     private LocationListener listener;
     private LocationManager locationManager;
@@ -24,6 +24,7 @@ public class GPS_Service extends Service {
         return null;
     }
 
+    // can suppress warning since we check for permissions
     @SuppressLint("MissingPermission")
     public void onCreate() {
         listener = new LocationListener() {
@@ -36,14 +37,10 @@ public class GPS_Service extends Service {
             }
 
             @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
+            public void onStatusChanged(String s, int i, Bundle bundle) {}
 
             @Override
-            public void onProviderEnabled(String s) {
-
-            }
+            public void onProviderEnabled(String s) {}
 
             @Override
             public void onProviderDisabled(String s) {
@@ -56,7 +53,6 @@ public class GPS_Service extends Service {
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
         // update every 3 seconds (ignore distance with 0)
-        // can suppress warning since we already check for permissions
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0, listener);
     }
 

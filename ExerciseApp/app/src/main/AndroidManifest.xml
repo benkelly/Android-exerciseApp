@@ -15,7 +15,7 @@
             android:theme="@style/AppTheme">
             <activity android:name=".RunTracker" />
 
-            <service android:name=".GPS_Service" />
+            <service android:name=".GpsService" />
 
             <meta-data
                 android:name="com.facebook.sdk.ApplicationId"
