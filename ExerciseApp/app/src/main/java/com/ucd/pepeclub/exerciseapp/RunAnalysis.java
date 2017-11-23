@@ -7,6 +7,9 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -67,28 +70,83 @@ public class RunAnalysis extends AppCompatActivity {
             lowestSpeed = extras.getDouble("BOTSPEED");
         }
 
-        distanceBox.setText(distance/1000 + " km");
-        avgSpeedBox.setText(averageSpeed + " m/s");
+        distanceBox.setText(String.format("%.2f", distance/1000) + " km");
+        avgSpeedBox.setText(String.format("%.2f", averageSpeed) + " m/s");
 
+        createSpeedGraph(lowestSpeed, highestSpeed, speeds);
+        createAltitudeGraph(lowestAltitude, highestAltitude, altitudes);
+    }
+
+    private void createSpeedGraph(double lowestSpeed, double highestSpeed, double[] speeds) {
+        // average the speeds
+        ArrayList<Double> newSpeeds = new ArrayList<>();
+        for (int i = 0; i < speeds.length; i+=5) {
+            if (i+4 > speeds.length-1) break;
+            double sum = speeds[i] + speeds[i + 1] + speeds[i + 2] + speeds[i + 3] + speeds[i + 4];
+            newSpeeds.add(sum / 5);
+        }
+
+        int count = 0;
+        int stepCount = 20;
+
+        if (newSpeeds.size() < stepCount) {
+            stepCount = newSpeeds.size();
+        }
+
+        String[] xAxis = new String[stepCount + 1];
+        ArrayList<Entry> yAxis = new ArrayList<>();
+        double speedStep = (highestSpeed - lowestSpeed) / stepCount;
+
+        for (float i = (float)lowestSpeed; i < highestSpeed; i += speedStep) {
+            // ??? i don't really get how this works but sure
+            xAxis[count] = "";
+            yAxis.add(new Entry(count, (float)(double)newSpeeds.get(count++)));
+        }
+
+        LineDataSet temp = new LineDataSet(yAxis, "Speed (metres/second)");
+        temp.setDrawCircles(false);
+        temp.setColor(Color.BLUE);
+        temp.setDrawValues(false);
+        XAxis xaxis = speedGraph.getXAxis();
+        xaxis.setEnabled(false);
+        YAxis yaxis = speedGraph.getAxisRight();
+        yaxis.setEnabled(false);
+        Description d = new Description();
+        d.setText("");
+        speedGraph.setDescription(d);
+        temp.setLineWidth(2.5f);
+        speedGraph.setContentDescription("");
+        speedGraph.setData(new LineData(temp));
+    }
+
+    private void createAltitudeGraph(double lowestAltitude, double highestAltitude, double[] altitudes) {
         int count = 0;
         int stepCount = 20;
         String[] xAxis = new String[stepCount + 1];
         ArrayList<Entry> yAxis = new ArrayList<>();
         double altStep = (highestAltitude - lowestAltitude) / stepCount;
+
         for (float i = (float)lowestAltitude; i < highestAltitude; i += altStep) {
-            // i know this looks bad
+            // ??? i don't really get how this works but sure
             xAxis[count] = "";
-            yAxis.add(new Entry(i, count++));
+            yAxis.add(new Entry(count, (float)altitudes[count++]));
         }
 
-        LineDataSet temp = new LineDataSet(yAxis, "");
+        LineDataSet temp = new LineDataSet(yAxis, "Altitude Change (metres)");
         temp.setDrawCircles(false);
         temp.setColor(Color.RED);
-
+        temp.setDrawValues(false);
+        XAxis xaxis = altGraph.getXAxis();
+        xaxis.setEnabled(false);
+        YAxis yaxis = altGraph.getAxisRight();
+        yaxis.setEnabled(false);
+        Description d = new Description();
+        d.setText("");
+        altGraph.setDescription(d);
+        temp.setLineWidth(2.5f);
+        altGraph.setContentDescription("");
         altGraph.setData(new LineData(temp));
-
     }
-
 
 
 }

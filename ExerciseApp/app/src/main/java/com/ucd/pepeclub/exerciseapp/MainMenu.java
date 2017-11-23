@@ -12,25 +12,24 @@ import android.widget.ListView;
 
 public class MainMenu extends AppCompatActivity {
 
-
-    private Button toFriendsMenu;
-    private Button toRunTracker;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-        setTitle(R.string.title_activity_main_menu);
+
+        Button toFriendsMenu;
+        Button toRunTracker;
+        Button settings;
 
         toFriendsMenu = findViewById(R.id.friends_button);
         toRunTracker = findViewById(R.id.runTracker_button);
+        settings = findViewById(R.id.settings_button);
 
         toFriendsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),Friends.class);
                 startActivity(i);
-                //finish();
             }
         });
 
@@ -39,12 +38,16 @@ public class MainMenu extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),RunTracker.class);
                 startActivity(i);
-                //finish();
             }
         });
 
-
-
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(),Settings.class);
+                startActivity(i);
+            }
+        });
 
     }
 

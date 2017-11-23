@@ -98,10 +98,9 @@ public class Friends extends AppCompatActivity {
                         }
 
                         gv = (GridView) findViewById(R.id.grid_view);
-                        final ArrayAdapter<String> gridViewArrayAdapter = new ArrayAdapter<String>
+                        ArrayAdapter<String> gridViewArrayAdapter = new ArrayAdapter<String>
                                 (getApplicationContext() ,R.layout.friends_grid, pointsList);
 
-                        // Data bind GridView with ArrayAdapter (String Array elements)
                         gv.setAdapter(gridViewArrayAdapter);
 
                     }

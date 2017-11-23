@@ -27,6 +27,7 @@
         android:layout_marginTop="88dp"
         android:baselineAligned="false"
         android:text="Start"
+        android:textAllCaps="false"
         android:textSize="25sp" />
 
 </RelativeLayout>

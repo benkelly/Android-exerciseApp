@@ -120,6 +120,11 @@ public class RunTracker extends AppCompatActivity {
                     double alt = Double.parseDouble(data[3]);
                     long epoch = Long.parseLong(data[4]);
 
+                    if (lat == previousLatitude && lon == previousLongitude) {
+                        registerReceiver(broadcastReceiver,new IntentFilter("location_update"));
+                        return;
+                    }
+
                     if (previousTime != -1) {
                         double thisDist = calculateDistance(lat, lon, alt);
                         distance += thisDist;
