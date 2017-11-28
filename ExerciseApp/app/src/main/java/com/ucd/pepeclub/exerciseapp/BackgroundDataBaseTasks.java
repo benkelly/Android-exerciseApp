@@ -49,6 +49,7 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
     protected String doInBackground(String... params) {
         String reg_user_url = "http://benjamin.ie/exerciseapp/add_user.php";
         String friend_search_url = "http://benjamin.ie/exerciseapp/friend_search.php";
+        String update_score_url = "http://benjamin.ie/exerciseapp/update_score.php";
         //String reg_user_url = "http://benjamin.ie/exerciseapp/reg_user.php";
         //String login_url = "http://10.0.2.2/webapp/login.php";
         String method = params[0];
@@ -72,6 +73,32 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
                 httpURLConnection.connect();
                 httpURLConnection.disconnect();
                 return "Registration Success...";
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (method.equals("post_score")) {
+            String score = params[1];
+            String id = params[2];
+            System.out.println(score+", "+id);
+            try {
+                String data = "?"+URLEncoder.encode("id", "UTF-8") +"="+ URLEncoder.encode(id, "UTF-8") + "&" +
+                        URLEncoder.encode("score", "UTF-8") +"="+  URLEncoder.encode(score, "UTF-8");
+                String link = update_score_url+data;
+                System.out.println(link);
+                URL url = new URL(link);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                OutputStream OS = httpURLConnection.getOutputStream();
+                OS.close();
+                InputStream IS = httpURLConnection.getInputStream();
+                IS.close();
+                httpURLConnection.connect();
+                httpURLConnection.disconnect();
+                return "Score Updated!";
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -144,6 +171,8 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
     protected void onPostExecute(String result) {
 
         if (result.equals("Registration Success...")) {
+            Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
+        } else if (result.equals("Score Updated!")) {
             Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
         } else if (result.equals("no rows")) {
             Toast.makeText(ctx, "No Results found for entered query", Toast.LENGTH_LONG).show();

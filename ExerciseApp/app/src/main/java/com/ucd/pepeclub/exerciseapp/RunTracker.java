@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,12 +16,26 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 
 public class RunTracker extends AppCompatActivity {
+
+    BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(this);
 
     private Button button;
     private BroadcastReceiver broadcastReceiver;
@@ -247,6 +262,8 @@ public class RunTracker extends AppCompatActivity {
                         args.putString("points", "Great run! You earned " + calculatePoints() + " points!");
                         pr.setArguments(args);
                         pr.show(fragmentManager, "tag");
+
+                        postPointToDataBase(calculatePoints());
                     }
 
                     timerTextView.setText("00:00:00");
@@ -262,6 +279,27 @@ public class RunTracker extends AppCompatActivity {
         int temp = (int)(distance / averageSpeed);
         return temp / 20;
     }
+
+    private void postPointToDataBase(int points) {
+        System.out.println("postPointToDataBase: "+points);
+
+
+        SharedPreferences userInfo =  getSharedPreferences("user_info",
+                Context.MODE_PRIVATE);
+
+        String id = (userInfo.getString("id", ""));
+        //String name = (userInfo.getString("name", ""));
+        //System.out.println("id: "+id+", name: "+name);
+        String score = Integer.toString(points);
+
+
+        //send id and score to php for new user storage
+        String method = "post_score";
+        backgroundTask.execute(method,score,id);
+
+
+    }
+
 
     private boolean verifyRuntimePermissions() {
         if (Build.VERSION.SDK_INT >= 23 &&
