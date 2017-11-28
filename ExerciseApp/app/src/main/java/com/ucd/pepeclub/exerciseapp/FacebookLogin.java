@@ -33,77 +33,81 @@ import java.util.Arrays;
 
 public class FacebookLogin extends AppCompatActivity {
 
-        CallbackManager callbackManager;
-        LoginButton loginButton;
+    BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(this);
 
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
 
-            boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
-            if (loggedIn){
+    CallbackManager callbackManager;
+    LoginButton loginButton;
+
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
+        if (loggedIn){
+            Intent intent  = new Intent(FacebookLogin.this, MainMenu.class);
+            startActivity(intent);
+        }
+        setContentView(R.layout.activity_facebook_login);
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "user_friends"));
+        callbackManager = CallbackManager.Factory.create();
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                loginButton.setVisibility(View.GONE);
+
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject jsonObject,
+                                                    GraphResponse response) {
+                                try {
+                                    String id = jsonObject.getString("id");
+                                    String name = jsonObject.getString("name");
+
+                                    SharedPreferences userInfo =  getSharedPreferences("user_info",
+                                            Context.MODE_PRIVATE);
+
+                                    SharedPreferences.Editor editor = userInfo.edit();
+                                    editor.putString("id", id);
+                                    editor.putString("name", name);
+                                    editor.commit();
+
+
+                                    //send id and name to php for new user storage
+                                    String method = "register";
+                                    backgroundTask.execute(method,name,id);
+
+
+
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,friends");
+                request.setParameters(parameters);
+                request.executeAsync();
+
                 Intent intent  = new Intent(FacebookLogin.this, MainMenu.class);
                 startActivity(intent);
             }
-            setContentView(R.layout.activity_facebook_login);
-            loginButton = (LoginButton) findViewById(R.id.login_button);
-            loginButton.setReadPermissions(Arrays.asList("public_profile", "user_friends"));
-            callbackManager = CallbackManager.Factory.create();
-            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-                @Override
-                public void onSuccess(LoginResult loginResult) {
-                    loginButton.setVisibility(View.GONE);
 
-                    GraphRequest request = GraphRequest.newMeRequest(
-                            loginResult.getAccessToken(),
-                            new GraphRequest.GraphJSONObjectCallback() {
-                                @Override
-                                public void onCompleted(JSONObject jsonObject,
-                                                        GraphResponse response) {
-                                    try {
-                                        String id = jsonObject.getString("id");
-                                        String name = jsonObject.getString("name");
+            @Override
+            public void onCancel() {
 
-                                        SharedPreferences userInfo =  getSharedPreferences("user_info",
-                                                Context.MODE_PRIVATE);
+            }
 
-                                        SharedPreferences.Editor editor = userInfo.edit();
-                                        editor.putString("id", id);
-                                        editor.putString("name", name);
-                                        editor.commit();
+            @Override
+            public void onError(FacebookException error) {
 
-
-                                        //send id and name to php for new user storage
-
-
-
-
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-
-                    Bundle parameters = new Bundle();
-                    parameters.putString("fields", "id,name,friends");
-                    request.setParameters(parameters);
-                    request.executeAsync();
-
-                    Intent intent  = new Intent(FacebookLogin.this, MainMenu.class);
-                    startActivity(intent);
-                }
-
-                @Override
-                public void onCancel() {
-
-                }
-
-                @Override
-                public void onError(FacebookException error) {
-
-                }
-            });
-        }
+            }
+        });
+    }
 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

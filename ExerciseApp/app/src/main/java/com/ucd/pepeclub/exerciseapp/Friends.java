@@ -23,8 +23,48 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
-public class Friends extends AppCompatActivity {
+public class Friends extends AppCompatActivity implements FriendsCallback{
+
+    BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(this);
+
+    @Override
+    public void processFinish(String output) {
+        // after getting DB RESULT JASON
+        System.out.println("processFinish"+output);
+        JSONArray jArray = null;
+        try {
+            jArray = new JSONArray(output);
+        // Extract data from json and store into ArrayList
+        for (int i = 0; i < jArray.length(); i++) {
+            JSONObject json_data = jArray.getJSONObject(i);
+            points.add(new Entry(json_data.getString("name"), Integer.parseInt(json_data.getString("score"))));
+        }
+        System.out.println("processFinish-> points: "+points);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Collections.sort(points, new EntryComparator());
+
+        ArrayList<String> pointsList = new ArrayList<String>();
+        for (Entry entry : points) {
+            pointsList.add(entry.name);
+            pointsList.add("   " + entry.points);
+        }
+
+        gv = (GridView) findViewById(R.id.grid_view);
+        ArrayAdapter<String> gridViewArrayAdapter = new ArrayAdapter<String>
+                (getApplicationContext() ,R.layout.friends_grid, pointsList);
+
+        gv.setAdapter(gridViewArrayAdapter);
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,friends");
+
+    }
 
     class Entry {
         String name;
@@ -48,12 +88,15 @@ public class Friends extends AppCompatActivity {
 
     private JSONArray friends;
     private GridView gv;
-    private ArrayList<Entry> points;
+    private ArrayList<Entry> points = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
+
+        backgroundTask.delegate = this;
 
 
         SharedPreferences settings = getSharedPreferences("userInfo",
@@ -69,26 +112,50 @@ public class Friends extends AppCompatActivity {
                             JSONObject js = (JSONObject) jsonObject.get("friends");
                             friends = (JSONArray) js.get("data");
                             String friendsToString = friends.toString();
-                            points = new ArrayList<>();
+                            //points = new ArrayList<>();
 
-                            Random r = new Random();
+/*                            Random r = new Random();
                             for (int i = 0; i < friends.length(); i++) {
                                 String name = friends.getJSONObject(i).getString("name");
                                 // for the time being use random number as points
                                 // TODO: get points from server
                                 int randomInt = r.nextInt(100);
                                 points.add(new Entry(name, randomInt));
-                            }
+                            }*/
 
                             //<------------------------>
                             //send friends string to php to get names and points
                             //fill points hashmap with user and correspondng points
                             //<------------------------>
 
+
+                            String friendSQL = "WHERE id=";
+                            for (int i=0; i<friends.length(); i++) {
+                                String str = friends.get(i).toString();
+                                str = str.replaceAll("[^0-9]","");
+                                friendSQL += str+" or id=";
+                            }
+                            friendSQL = friendSQL.substring(0, friendSQL.length()-7);
+                            friendSQL +=";";
+                            System.out.println(friendSQL);
+
+
+
+                            String method = "friend";
+                            try {
+                                backgroundTask.execute(method, friendSQL).get();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
+                        //System.out.println("HEREERE: "+points);
                         Collections.sort(points, new EntryComparator());
 
                         ArrayList<String> pointsList = new ArrayList<String>();
@@ -105,9 +172,9 @@ public class Friends extends AppCompatActivity {
 
                     }
                 });
-            Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,friends");
-            request.setParameters(parameters);
-            request.executeAsync();
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,friends");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 }

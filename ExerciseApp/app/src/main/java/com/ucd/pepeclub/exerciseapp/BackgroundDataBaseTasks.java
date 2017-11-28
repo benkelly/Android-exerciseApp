@@ -2,8 +2,19 @@ package com.ucd.pepeclub.exerciseapp;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,8 +30,12 @@ import java.net.URLEncoder;
 
 
 public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
+    public FriendsCallback delegate = null;
+
     AlertDialog alertDialog;
     Context ctx;
+
+
     BackgroundDataBaseTasks(Context ctx)
     {
         this.ctx =ctx;
@@ -33,6 +48,7 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
     @Override
     protected String doInBackground(String... params) {
         String reg_user_url = "http://benjamin.ie/exerciseapp/add_user.php";
+        String friend_search_url = "http://benjamin.ie/exerciseapp/friend_search.php";
         //String reg_user_url = "http://benjamin.ie/exerciseapp/reg_user.php";
         //String login_url = "http://10.0.2.2/webapp/login.php";
         String method = params[0];
@@ -50,12 +66,6 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setDoOutput(true);
                 OutputStream OS = httpURLConnection.getOutputStream();
-                /*BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(OS, "UTF-8"));
-                String data = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8") + "&" +
-                        URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(id, "UTF-8");
-                bufferedWriter.write(data);
-                bufferedWriter.flush();
-                bufferedWriter.close();*/
                 OS.close();
                 InputStream IS = httpURLConnection.getInputStream();
                 IS.close();
@@ -68,40 +78,60 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
                 e.printStackTrace();
             }
         }
-        else if(method.equals("login"))
+        else if(method.equals("friend"))
         {
-            String login_name = params[1];
-            String login_pass = params[2];
+            final int CONNECTION_TIMEOUT = 10000;
+            final int READ_TIMEOUT = 15000;
+            HttpURLConnection conn;
+            String searchQuery = params[1];
+
             try {
-                URL url = new URL(reg_user_url);
-                HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
-                String data = URLEncoder.encode("login_name","UTF-8")+"="+URLEncoder.encode(login_name,"UTF-8")+"&"+
-                        URLEncoder.encode("login_pass","UTF-8")+"="+URLEncoder.encode(login_pass,"UTF-8");
-                bufferedWriter.write(data);
-                bufferedWriter.flush();
-                bufferedWriter.close();
+
+                String data = "?"+URLEncoder.encode("search", "UTF-8") +"="+ searchQuery.replace(' ', '_');
+                System.out.println(friend_search_url+data);
+                URL url = new URL(friend_search_url+data);
+                conn = (HttpURLConnection)url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+                OutputStream outputStream = conn.getOutputStream();
                 outputStream.close();
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
-                String response = "";
-                String line = "";
-                while ((line = bufferedReader.readLine())!=null)
-                {
-                    response+= line;
+
+
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                return e1.toString();
+            }
+
+            try {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+                    System.out.println(result.toString());
+                    // Pass data to onPostExecute method
+                    return (result.toString());
+
+                } else {
+                    return("Connection error");
                 }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-                return response;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+
             } catch (IOException e) {
                 e.printStackTrace();
+                return e.toString();
+            } finally {
+                conn.disconnect();
             }
         }
         return null;
@@ -112,14 +142,14 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
     }
     @Override
     protected void onPostExecute(String result) {
-        if(result.equals("Registration Success..."))
-        {
+
+        if (result.equals("Registration Success...")) {
             Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            alertDialog.setMessage(result);
-            alertDialog.show();
+        } else if (result.equals("no rows")) {
+            Toast.makeText(ctx, "No Results found for entered query", Toast.LENGTH_LONG).show();
+        } else {
+
+            delegate.processFinish(result);
         }
     }
 }
