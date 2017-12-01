@@ -177,7 +177,6 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
         } else if (result.equals("no rows")) {
             Toast.makeText(ctx, "No Results found for entered query", Toast.LENGTH_LONG).show();
         } else {
-
             delegate.processFinish(result);
         }
     }

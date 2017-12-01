@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ToggleButton;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -16,18 +18,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class Friends extends AppCompatActivity implements FriendsCallback{
 
     BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(this);
+    private String friendSQL = "WHERE id=";
+
 
     @Override
     public void processFinish(String output) {
@@ -66,6 +65,34 @@ public class Friends extends AppCompatActivity implements FriendsCallback{
 
     }
 
+    public void onToggleClicked(View view) {
+        boolean on = ((ToggleButton) view).isChecked();
+        BackgroundDataBaseTasks tempTask = new BackgroundDataBaseTasks(this);
+        points.clear();
+
+        if (on) {
+            String method = "friend";
+            try {
+                tempTask.delegate = this;
+                tempTask.execute(method, "").get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        } else {
+            String method = "friend";
+            try {
+                tempTask.delegate = this;
+                tempTask.execute(method, friendSQL).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     class Entry {
         String name;
         int points;
@@ -93,6 +120,7 @@ public class Friends extends AppCompatActivity implements FriendsCallback{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
@@ -111,25 +139,8 @@ public class Friends extends AppCompatActivity implements FriendsCallback{
                         try {
                             JSONObject js = (JSONObject) jsonObject.get("friends");
                             friends = (JSONArray) js.get("data");
-                            String friendsToString = friends.toString();
-                            //points = new ArrayList<>();
+                            //String friendsToString = friends.toString();
 
-/*                            Random r = new Random();
-                            for (int i = 0; i < friends.length(); i++) {
-                                String name = friends.getJSONObject(i).getString("name");
-                                // for the time being use random number as points
-                                // TODO: get points from server
-                                int randomInt = r.nextInt(100);
-                                points.add(new Entry(name, randomInt));
-                            }*/
-
-                            //<------------------------>
-                            //send friends string to php to get names and points
-                            //fill points hashmap with user and correspondng points
-                            //<------------------------>
-
-
-                            String friendSQL = "WHERE id=";
                             for (int i=0; i<friends.length(); i++) {
                                 String str = friends.get(i).toString();
                                 str = str.replaceAll("[^0-9]","");
@@ -138,8 +149,6 @@ public class Friends extends AppCompatActivity implements FriendsCallback{
                             friendSQL = friendSQL.substring(0, friendSQL.length()-7);
                             friendSQL +=";";
                             System.out.println(friendSQL);
-
-
 
                             String method = "friend";
                             try {
@@ -155,7 +164,6 @@ public class Friends extends AppCompatActivity implements FriendsCallback{
                             e.printStackTrace();
                         }
 
-                        //System.out.println("HEREERE: "+points);
                         Collections.sort(points, new EntryComparator());
 
                         ArrayList<String> pointsList = new ArrayList<String>();
@@ -169,7 +177,6 @@ public class Friends extends AppCompatActivity implements FriendsCallback{
                                 (getApplicationContext() ,R.layout.friends_grid, pointsList);
 
                         gv.setAdapter(gridViewArrayAdapter);
-
                     }
                 });
         Bundle parameters = new Bundle();
