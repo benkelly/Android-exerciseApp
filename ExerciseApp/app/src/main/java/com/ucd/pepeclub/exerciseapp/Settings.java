@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.facebook.login.LoginManager;
 
 public class Settings extends AppCompatActivity {
 
@@ -21,8 +24,12 @@ public class Settings extends AppCompatActivity {
         logoutFacebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // logout of facebook
-                // toast confirming logout
+                Intent intent = new Intent(getApplicationContext(), FacebookLogin.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                LoginManager.getInstance().logOut();
+                Toast toast = Toast.makeText(getApplicationContext(), "Logout successful", Toast.LENGTH_SHORT);
+                toast.show();
+                startActivity(intent);
             }
         });
 
