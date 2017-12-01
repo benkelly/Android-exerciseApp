@@ -59,7 +59,15 @@
             android:name=".RunAnalysis"
             android:label="@string/title_activity_run_analysis"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Settings"></activity>
+        <activity android:name=".Settings" />
+        <activity
+            android:name=".AchievementActivity"
+            android:label="@string/title_activity_achievement"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <provider android:authorities="com.facebook.app.FacebookContentProvider{1517397991688698}"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
     </application>
+
 
 </manifest>

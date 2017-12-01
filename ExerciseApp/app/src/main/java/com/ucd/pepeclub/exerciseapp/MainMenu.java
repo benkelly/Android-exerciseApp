@@ -35,10 +35,12 @@ public class MainMenu extends AppCompatActivity {
 
         Button toFriendsMenu;
         Button toRunTracker;
+        Button toAchievements;
         Button settings;
 
         toFriendsMenu = findViewById(R.id.friends_button);
         toRunTracker = findViewById(R.id.runTracker_button);
+        toAchievements = findViewById(R.id.achievements_button);
         settings = findViewById(R.id.settings_button);
 
 
@@ -54,6 +56,14 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),RunTracker.class);
+                startActivity(i);
+            }
+        });
+
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(),AchievementActivity.class);
                 startActivity(i);
             }
         });
