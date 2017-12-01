@@ -28,11 +28,6 @@ import java.util.Random;
 
 public class MainMenu extends AppCompatActivity {
 
-    private JSONArray friends;
-    private GridView gv;
-    private ArrayList<Friends.Entry> points;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

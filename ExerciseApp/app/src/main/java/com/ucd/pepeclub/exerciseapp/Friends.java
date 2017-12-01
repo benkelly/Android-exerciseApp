@@ -139,7 +139,6 @@ public class Friends extends AppCompatActivity implements FriendsCallback{
                         try {
                             JSONObject js = (JSONObject) jsonObject.get("friends");
                             friends = (JSONArray) js.get("data");
-                            //String friendsToString = friends.toString();
 
                             for (int i=0; i<friends.length(); i++) {
                                 String str = friends.get(i).toString();
