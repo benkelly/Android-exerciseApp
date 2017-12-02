@@ -58,8 +58,7 @@ public class RunAnalysis extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
             finish();
-        }
-        else {
+        } else {
             distance = extras.getDouble("DISTANCE");
             averageSpeed = extras.getDouble("AVERAGE_SPEED");
             altitudes = extras.getDoubleArray("ALTITUDES");
@@ -70,7 +69,7 @@ public class RunAnalysis extends AppCompatActivity {
             lowestSpeed = extras.getDouble("BOTSPEED");
         }
 
-        distanceBox.setText(String.format("%.2f", distance/1000) + " km");
+        distanceBox.setText(String.format("%.2f", distance / 1000) + " km");
         avgSpeedBox.setText(String.format("%.2f", averageSpeed) + " m/s");
 
         createSpeedGraph(lowestSpeed, highestSpeed, speeds);
@@ -80,8 +79,8 @@ public class RunAnalysis extends AppCompatActivity {
     private void createSpeedGraph(double lowestSpeed, double highestSpeed, double[] speeds) {
         // average the speeds
         ArrayList<Double> newSpeeds = new ArrayList<>();
-        for (int i = 0; i < speeds.length; i+=5) {
-            if (i+4 > speeds.length-1) break;
+        for (int i = 0; i < speeds.length; i += 5) {
+            if (i + 4 > speeds.length - 1) break;
             double sum = speeds[i] + speeds[i + 1] + speeds[i + 2] + speeds[i + 3] + speeds[i + 4];
             newSpeeds.add(sum / 5);
         }
@@ -97,10 +96,10 @@ public class RunAnalysis extends AppCompatActivity {
         ArrayList<Entry> yAxis = new ArrayList<>();
         double speedStep = (highestSpeed - lowestSpeed) / stepCount;
 
-        for (float i = (float)lowestSpeed; i < highestSpeed; i += speedStep) {
+        for (float i = (float) lowestSpeed; i < highestSpeed; i += speedStep) {
             // ??? i don't really get how this works but sure
             xAxis[count] = "";
-            yAxis.add(new Entry(count, (float)(double)newSpeeds.get(count++)));
+            yAxis.add(new Entry(count, (float) (double) newSpeeds.get(count++)));
         }
 
         LineDataSet temp = new LineDataSet(yAxis, "Speed (metres/second)");
@@ -126,10 +125,10 @@ public class RunAnalysis extends AppCompatActivity {
         ArrayList<Entry> yAxis = new ArrayList<>();
         double altStep = (highestAltitude - lowestAltitude) / stepCount;
 
-        for (float i = (float)lowestAltitude; i < highestAltitude; i += altStep) {
+        for (float i = (float) lowestAltitude; i < highestAltitude; i += altStep) {
             // ??? i don't really get how this works but sure
             xAxis[count] = "";
-            yAxis.add(new Entry(count, (float)altitudes[count++]));
+            yAxis.add(new Entry(count, (float) altitudes[count++]));
         }
 
         LineDataSet temp = new LineDataSet(yAxis, "Altitude Change (metres)");

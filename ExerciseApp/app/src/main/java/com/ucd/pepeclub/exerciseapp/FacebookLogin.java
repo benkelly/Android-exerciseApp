@@ -43,8 +43,8 @@ public class FacebookLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
-        if (loggedIn){
-            Intent intent  = new Intent(FacebookLogin.this, MainMenu.class);
+        if (loggedIn) {
+            Intent intent = new Intent(FacebookLogin.this, MainMenu.class);
             startActivity(intent);
         }
         setContentView(R.layout.activity_facebook_login);
@@ -66,7 +66,7 @@ public class FacebookLogin extends AppCompatActivity {
                                     String id = jsonObject.getString("id");
                                     String name = jsonObject.getString("name");
 
-                                    SharedPreferences userInfo =  getSharedPreferences("user_info",
+                                    SharedPreferences userInfo = getSharedPreferences("user_info",
                                             Context.MODE_PRIVATE);
 
                                     SharedPreferences.Editor editor = userInfo.edit();
@@ -77,9 +77,7 @@ public class FacebookLogin extends AppCompatActivity {
 
                                     //send id and name to php for new user storage
                                     String method = "register";
-                                    backgroundTask.execute(method,name,id);
-
-
+                                    backgroundTask.execute(method, name, id);
 
 
                                 } catch (JSONException e) {
@@ -93,7 +91,7 @@ public class FacebookLogin extends AppCompatActivity {
                 request.setParameters(parameters);
                 request.executeAsync();
 
-                Intent intent  = new Intent(FacebookLogin.this, MainMenu.class);
+                Intent intent = new Intent(FacebookLogin.this, MainMenu.class);
                 startActivity(intent);
             }
 

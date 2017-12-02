@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
 
-public class Friends extends AppCompatActivity implements FriendsCallback{
+public class Friends extends AppCompatActivity implements FriendsCallback {
 
     BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(this);
     private String friendSQL = "WHERE id=";
@@ -31,16 +31,16 @@ public class Friends extends AppCompatActivity implements FriendsCallback{
     @Override
     public void processFinish(String output) {
         // after getting DB RESULT JASON
-        System.out.println("processFinish"+output);
+        System.out.println("processFinish" + output);
         JSONArray jArray = null;
         try {
             jArray = new JSONArray(output);
-        // Extract data from json and store into ArrayList
-        for (int i = 0; i < jArray.length(); i++) {
-            JSONObject json_data = jArray.getJSONObject(i);
-            points.add(new Entry(json_data.getString("name"), Integer.parseInt(json_data.getString("score"))));
-        }
-        System.out.println("processFinish-> points: "+points);
+            // Extract data from json and store into ArrayList
+            for (int i = 0; i < jArray.length(); i++) {
+                JSONObject json_data = jArray.getJSONObject(i);
+                points.add(new Entry(json_data.getString("name"), Integer.parseInt(json_data.getString("score"))));
+            }
+            System.out.println("processFinish-> points: " + points);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class Friends extends AppCompatActivity implements FriendsCallback{
 
         gv = (GridView) findViewById(R.id.grid_view);
         ArrayAdapter<String> gridViewArrayAdapter = new ArrayAdapter<String>
-                (getApplicationContext() ,R.layout.friends_grid, pointsList);
+                (getApplicationContext(), R.layout.friends_grid, pointsList);
 
         gv.setAdapter(gridViewArrayAdapter);
 
@@ -140,13 +140,13 @@ public class Friends extends AppCompatActivity implements FriendsCallback{
                             JSONObject js = (JSONObject) jsonObject.get("friends");
                             friends = (JSONArray) js.get("data");
 
-                            for (int i=0; i<friends.length(); i++) {
+                            for (int i = 0; i < friends.length(); i++) {
                                 String str = friends.get(i).toString();
-                                str = str.replaceAll("[^0-9]","");
-                                friendSQL += str+" or id=";
+                                str = str.replaceAll("[^0-9]", "");
+                                friendSQL += str + " or id=";
                             }
-                            friendSQL = friendSQL.substring(0, friendSQL.length()-7);
-                            friendSQL +=";";
+                            friendSQL = friendSQL.substring(0, friendSQL.length() - 7);
+                            friendSQL += ";";
                             System.out.println(friendSQL);
 
                             String method = "friend";
@@ -173,7 +173,7 @@ public class Friends extends AppCompatActivity implements FriendsCallback{
 
                         gv = (GridView) findViewById(R.id.grid_view);
                         ArrayAdapter<String> gridViewArrayAdapter = new ArrayAdapter<String>
-                                (getApplicationContext() ,R.layout.friends_grid, pointsList);
+                                (getApplicationContext(), R.layout.friends_grid, pointsList);
 
                         gv.setAdapter(gridViewArrayAdapter);
                     }

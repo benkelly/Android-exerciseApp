@@ -47,7 +47,7 @@ public class MainMenu extends AppCompatActivity {
         toFriendsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),Friends.class);
+                Intent i = new Intent(getApplicationContext(), Friends.class);
                 startActivity(i);
             }
         });
@@ -55,7 +55,15 @@ public class MainMenu extends AppCompatActivity {
         toRunTracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),RunTracker.class);
+                Intent i = new Intent(getApplicationContext(), RunTracker.class);
+                startActivity(i);
+            }
+        });
+
+        toAchievements.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), AchievementActivity.class);
                 startActivity(i);
             }
         });
@@ -63,15 +71,7 @@ public class MainMenu extends AppCompatActivity {
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),AchievementActivity.class);
-                startActivity(i);
-            }
-        });
-
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),Settings.class);
+                Intent i = new Intent(getApplicationContext(), Settings.class);
                 startActivity(i);
             }
         });

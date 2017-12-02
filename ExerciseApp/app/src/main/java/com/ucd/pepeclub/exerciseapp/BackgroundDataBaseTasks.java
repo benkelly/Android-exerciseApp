@@ -29,22 +29,23 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 
-public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
+public class BackgroundDataBaseTasks extends AsyncTask<String, Void, String> {
     public FriendsCallback delegate = null;
 
     AlertDialog alertDialog;
     Context ctx;
 
 
-    BackgroundDataBaseTasks(Context ctx)
-    {
-        this.ctx =ctx;
+    BackgroundDataBaseTasks(Context ctx) {
+        this.ctx = ctx;
     }
+
     @Override
     protected void onPreExecute() {
         alertDialog = new AlertDialog.Builder(ctx).create();
         alertDialog.setTitle("Login Information....");
     }
+
     @Override
     protected String doInBackground(String... params) {
         String reg_user_url = "http://benjamin.ie/exerciseapp/add_user.php";
@@ -56,11 +57,11 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
         if (method.equals("register")) {
             String name = params[1];
             String id = params[2];
-            System.out.println(name+", "+id);
+            System.out.println(name + ", " + id);
             try {
-                String data = "?"+URLEncoder.encode("id", "UTF-8") +"="+ URLEncoder.encode(id, "UTF-8") + "&" +
-                        URLEncoder.encode("name", "UTF-8") +"="+  URLEncoder.encode(name.replace(' ', '_'), "UTF-8");
-                String link = reg_user_url+data;
+                String data = "?" + URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(id, "UTF-8") + "&" +
+                        URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name.replace(' ', '_'), "UTF-8");
+                String link = reg_user_url + data;
                 System.out.println(link);
                 URL url = new URL(link);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -82,11 +83,11 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
         if (method.equals("post_score")) {
             String score = params[1];
             String id = params[2];
-            System.out.println(score+", "+id);
+            System.out.println(score + ", " + id);
             try {
-                String data = "?"+URLEncoder.encode("id", "UTF-8") +"="+ URLEncoder.encode(id, "UTF-8") + "&" +
-                        URLEncoder.encode("score", "UTF-8") +"="+  URLEncoder.encode(score, "UTF-8");
-                String link = update_score_url+data;
+                String data = "?" + URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(id, "UTF-8") + "&" +
+                        URLEncoder.encode("score", "UTF-8") + "=" + URLEncoder.encode(score, "UTF-8");
+                String link = update_score_url + data;
                 System.out.println(link);
                 URL url = new URL(link);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -104,9 +105,7 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else if(method.equals("friend"))
-        {
+        } else if (method.equals("friend")) {
             final int CONNECTION_TIMEOUT = 10000;
             final int READ_TIMEOUT = 15000;
             HttpURLConnection conn;
@@ -114,10 +113,10 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
 
             try {
 
-                String data = "?"+URLEncoder.encode("search", "UTF-8") +"="+ searchQuery.replace(' ', '_');
-                System.out.println(friend_search_url+data);
-                URL url = new URL(friend_search_url+data);
-                conn = (HttpURLConnection)url.openConnection();
+                String data = "?" + URLEncoder.encode("search", "UTF-8") + "=" + searchQuery.replace(' ', '_');
+                System.out.println(friend_search_url + data);
+                URL url = new URL(friend_search_url + data);
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
@@ -151,7 +150,7 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
                     return (result.toString());
 
                 } else {
-                    return("Connection error");
+                    return ("Connection error");
                 }
 
             } catch (IOException e) {
@@ -163,10 +162,12 @@ public class BackgroundDataBaseTasks extends AsyncTask<String,Void,String> {
         }
         return null;
     }
+
     @Override
     protected void onProgressUpdate(Void... values) {
         super.onProgressUpdate(values);
     }
+
     @Override
     protected void onPostExecute(String result) {
 

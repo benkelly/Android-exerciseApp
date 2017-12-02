@@ -83,8 +83,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/speedGraph">
-    </com.github.mikephil.charting.charts.LineChart>
+        app:layout_constraintTop_toBottomOf="@+id/speedGraph"></com.github.mikephil.charting.charts.LineChart>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/speedGraph"
@@ -96,7 +95,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/distanceBox"
-        app:layout_constraintBottom_toTopOf="@+id/altGraph">
-    </com.github.mikephil.charting.charts.LineChart>
+        app:layout_constraintBottom_toTopOf="@+id/altGraph"></com.github.mikephil.charting.charts.LineChart>
 
 </android.support.constraint.ConstraintLayout>

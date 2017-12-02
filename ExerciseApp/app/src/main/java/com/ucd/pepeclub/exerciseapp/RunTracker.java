@@ -91,7 +91,7 @@ public class RunTracker extends AppCompatActivity {
 
         timerTextView.setText("00:00:00");
 
-        if(!verifyRuntimePermissions())
+        if (!verifyRuntimePermissions())
             enableButtons();
 
         distance = 0;
@@ -115,12 +115,12 @@ public class RunTracker extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(broadcastReceiver == null){
+        if (broadcastReceiver == null) {
             broadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
 
-                    String res = (String)intent.getExtras().get("coordinates");
+                    String res = (String) intent.getExtras().get("coordinates");
 
                     if (res == null) {
                         // don't do this
@@ -136,7 +136,7 @@ public class RunTracker extends AppCompatActivity {
                     long epoch = Long.parseLong(data[4]);
 
                     if (lat == previousLatitude && lon == previousLongitude) {
-                        registerReceiver(broadcastReceiver,new IntentFilter("location_update"));
+                        registerReceiver(broadcastReceiver, new IntentFilter("location_update"));
                         return;
                     }
 
@@ -162,8 +162,7 @@ public class RunTracker extends AppCompatActivity {
                         if (speed < lowestSpeed) {
                             lowestSpeed = speed;
                         }
-                    }
-                    else {
+                    } else {
                         firstTime = epoch;
                     }
 
@@ -174,13 +173,13 @@ public class RunTracker extends AppCompatActivity {
                 }
             };
         }
-        registerReceiver(broadcastReceiver,new IntentFilter("location_update"));
+        registerReceiver(broadcastReceiver, new IntentFilter("location_update"));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(broadcastReceiver != null){
+        if (broadcastReceiver != null) {
             unregisterReceiver(broadcastReceiver);
         }
     }
@@ -188,11 +187,11 @@ public class RunTracker extends AppCompatActivity {
     private double calculateDistance(double lat, double lon, double alt) {
         double earthRadius = 6371000.;
 
-        double diffLat  = Math.toRadians(Math.abs(lat - previousLatitude));
+        double diffLat = Math.toRadians(Math.abs(lat - previousLatitude));
         double diffLon = Math.toRadians(Math.abs(lon - previousLongitude));
 
         double pLat = Math.toRadians(previousLatitude);
-        double cLat   = Math.toRadians(lat);
+        double cLat = Math.toRadians(lat);
 
         double a = haversine(diffLat) + Math.cos(pLat) * Math.cos(cLat) * haversine(diffLon);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
@@ -201,7 +200,7 @@ public class RunTracker extends AppCompatActivity {
     }
 
     private double calculateSpeed(double dist, long epoch) {
-        return dist / ((double)((epoch - previousTime)) / 1000);
+        return dist / ((double) ((epoch - previousTime)) / 1000);
     }
 
     public static double haversine(double angle) {
@@ -238,7 +237,7 @@ public class RunTracker extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),GpsService.class);
+                Intent i = new Intent(getApplicationContext(), GpsService.class);
 
                 if (!running) {
                     startService(i);
@@ -246,8 +245,7 @@ public class RunTracker extends AppCompatActivity {
                     timerHandler.postDelayed(timerRunnable, 0);
                     button.setText("Stop");
                     running = true;
-                }
-                else {
+                } else {
                     stopService(i);
                     timerHandler.removeCallbacks(timerRunnable);
 
@@ -276,15 +274,15 @@ public class RunTracker extends AppCompatActivity {
     }
 
     private int calculatePoints() {
-        int temp = (int)(distance / averageSpeed);
+        int temp = (int) (distance / averageSpeed);
         return temp / 20;
     }
 
     private void postPointToDataBase(int points) {
-        System.out.println("postPointToDataBase: "+points);
+        System.out.println("postPointToDataBase: " + points);
 
 
-        SharedPreferences userInfo =  getSharedPreferences("user_info",
+        SharedPreferences userInfo = getSharedPreferences("user_info",
                 Context.MODE_PRIVATE);
 
         String id = (userInfo.getString("id", ""));
@@ -295,7 +293,7 @@ public class RunTracker extends AppCompatActivity {
 
         //send id and score to php for new user storage
         String method = "post_score";
-        backgroundTask.execute(method,score,id);
+        backgroundTask.execute(method, score, id);
 
 
     }
@@ -304,9 +302,9 @@ public class RunTracker extends AppCompatActivity {
     private boolean verifyRuntimePermissions() {
         if (Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},100);
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
 
             return true;
         }
@@ -340,11 +338,10 @@ public class RunTracker extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 100){
-            if( grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
+        if (requestCode == 100) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 enableButtons();
-            }
-            else {
+            } else {
                 verifyRuntimePermissions();
             }
         }
