@@ -27,7 +27,6 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
     BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(this);
     private String friendSQL = "WHERE id=";
 
-
     @Override
     public void processFinish(String output) {
         // after getting DB RESULT JASON
@@ -76,9 +75,7 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
             try {
                 tempTask.delegate = this;
                 tempTask.execute(method, "").get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
@@ -86,9 +83,7 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
             try {
                 tempTask.delegate = this;
                 tempTask.execute(method, friendSQL).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -127,16 +122,13 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
 
         backgroundTask.delegate = this;
 
-
-        SharedPreferences settings = getSharedPreferences("userInfo",
-                Context.MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
 
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
-                    public void onCompleted(JSONObject jsonObject,
-                                            GraphResponse response) {
+                    public void onCompleted(JSONObject jsonObject, GraphResponse response) {
                         try {
                             JSONObject js = (JSONObject) jsonObject.get("friends");
                             friends = (JSONArray) js.get("data");

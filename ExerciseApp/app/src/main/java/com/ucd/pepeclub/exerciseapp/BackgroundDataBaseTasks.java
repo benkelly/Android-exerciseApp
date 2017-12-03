@@ -171,12 +171,12 @@ public class BackgroundDataBaseTasks extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
 
-        if (result.equals("Registration Success...")) {
-            Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
+        if (result.equals("Successfully logged in!")) {
+            Toast.makeText(ctx, result, Toast.LENGTH_SHORT).show();
         } else if (result.equals("Score Updated!")) {
-            Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
+            Toast.makeText(ctx, result, Toast.LENGTH_SHORT).show();
         } else if (result.equals("no rows")) {
-            Toast.makeText(ctx, "No Results found for entered query", Toast.LENGTH_LONG).show();
+            Toast.makeText(ctx, "No Results found for entered query", Toast.LENGTH_SHORT).show();
         } else {
             delegate.processFinish(result);
         }

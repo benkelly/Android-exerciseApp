@@ -308,17 +308,11 @@ public class ExerciseTracker extends Fragment {
     private void postPointToDataBase(int points) {
         System.out.println("postPointToDataBase: "+points);
 
-
         SharedPreferences userInfo =  getActivity().getSharedPreferences("user_info",
                 Context.MODE_PRIVATE);
 
         String id = (userInfo.getString("id", ""));
-        //String name = (userInfo.getString("name", ""));
-        //System.out.println("id: "+id+", name: "+name);
         String score = Integer.toString(points);
-
-
-        //send id and score to php for new user storage
         String method = "post_score";
 
         backgroundTask.execute(method,score,id);

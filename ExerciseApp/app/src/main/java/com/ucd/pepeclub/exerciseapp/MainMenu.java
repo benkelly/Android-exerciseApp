@@ -79,6 +79,7 @@ public class MainMenu extends AppCompatActivity {
                 Toast toast = Toast.makeText(getApplicationContext(), "Logout successful!", Toast.LENGTH_SHORT);
                 toast.show();
                 startActivity(intent);
+                System.exit(0);
             }
         });
 

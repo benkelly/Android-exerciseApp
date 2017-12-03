@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -122,9 +125,20 @@ public class FacebookLogin extends AppCompatActivity {
                 @Override
                 public void onError(FacebookException error) {
                     Log.wtf("Login error: ", error.getMessage());
+
+                    if (!isNetworkAvailable()) {
+                        Toast toast = Toast.makeText(getApplicationContext(), "No internet access! ", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                 }
             });
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
