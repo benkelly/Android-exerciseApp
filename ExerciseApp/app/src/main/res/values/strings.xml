@@ -15,4 +15,6 @@
     <string name="runtracker_stop_button">Stop</string>
     <string name="runtracker_start_time">00:00:00</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">ww0M8E30JbOdV2CoNUQivuazM</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">	CfdxOQG9bCi9xsJTY75IyVUnCJzkz2jkpnGHkgLoWUfIRNPA1N</string>
 </resources>

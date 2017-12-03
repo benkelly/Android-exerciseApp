@@ -27,9 +27,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="88dp"
         android:baselineAligned="false"
-        android:text="Placholder"
+        android:text="Gloat"
         android:textAllCaps="false"
         android:textSize="25sp"
         tools:layout_editor_absoluteY="171dp" />
+
 
 </LinearLayout>
