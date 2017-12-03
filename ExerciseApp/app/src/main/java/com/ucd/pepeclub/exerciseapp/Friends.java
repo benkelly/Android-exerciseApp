@@ -1,28 +1,40 @@
 package com.ucd.pepeclub.exerciseapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.widget.ProfilePictureView;
+import com.facebook.share.model.ShareLinkContent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
 
-public class Friends extends AppCompatActivity implements FriendsCallback {
+public class Friends extends AppCompatActivity implements  FriendsCallback{
 
     BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(this);
     private String friendSQL = "WHERE id=";
@@ -30,42 +42,62 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
     @Override
     public void processFinish(String output) {
         // after getting DB RESULT JASON
-        System.out.println("processFinish" + output);
+        System.out.println("processFinish"+output);
         JSONArray jArray = null;
+        SharedPreferences userInfo =  getSharedPreferences("user_info",
+                Context.MODE_PRIVATE);
+        String id = (userInfo.getString("id", ""));
+
+        boolean userFound = false;
+
         try {
             jArray = new JSONArray(output);
-
             // Extract data from json and store into ArrayList
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject json_data = jArray.getJSONObject(i);
-                points.add(new Entry(json_data.getString("name"), Integer.parseInt(json_data.getString("score"))));
+                points.add(new Entry(json_data.getString("name"), Integer.parseInt(json_data.getString("score")), json_data.getString("id")));
+                if(points.get(i).id.equals(id)){
+                    userFound = true;
+                }
             }
-            System.out.println("processFinish-> points: " + points);
-
+            //user is not included in current users
+            if(!userFound){
+                points.add(new Entry(userInfo.getString("name", ""), score, userInfo.getString("id", "")));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+
+
+
         Collections.sort(points, new EntryComparator());
 
-        ArrayList<String> pointsList = new ArrayList<String>();
-        for (Entry entry : points) {
-            pointsList.add(entry.name);
-            pointsList.add("   " + entry.points);
+
+        ArrayList<User> users = new ArrayList<>();
+
+
+
+
+
+        for(int i=0; i<points.size(); i++){
+            users.add(new User("#"+(i+1), points.get(i).name, Integer.toString(points.get(i).points), points.get(i).id));
+            if(users.get(i).getId().equals(id)){
+                userRank = i+1;
+            }
+
         }
 
-        gv = (GridView) findViewById(R.id.grid_view);
-        ArrayAdapter<String> gridViewArrayAdapter = new ArrayAdapter<String>
-                (getApplicationContext(), R.layout.friends_grid, pointsList);
 
-        gv.setAdapter(gridViewArrayAdapter);
 
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,friends");
 
+        rankDisplay.setText("Rank #"+userRank+"/"+users.size());
+
+        adapter.setUserList(users);
+        adapter.notifyDataSetChanged();
+        recyclerView.setAdapter(adapter);
     }
 
-    private int score =0;
     @Override
     public void userProcessFinish(String output) {
         // after getting DB RESULT JASON
@@ -90,6 +122,7 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
         points.clear();
 
         if (on) {
+            leaderboardType.setText("Global Leaderboard");
             String method = "friend";
             try {
                 tempTask.delegate = this;
@@ -98,6 +131,7 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
                 e.printStackTrace();
             }
         } else {
+            leaderboardType.setText("Friends Leaderboard");
             String method = "friend";
             try {
                 tempTask.delegate = this;
@@ -111,10 +145,12 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
     class Entry {
         String name;
         int points;
+        String id;
 
-        Entry(String name, int points) {
+        Entry(String name, int points, String id) {
             this.name = name;
             this.points = points;
+            this.id = id;
         }
     }
 
@@ -129,8 +165,42 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
     }
 
     private JSONArray friends;
-    private GridView gv;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager llm;
+    private LeaderboardAdapter adapter;
     private ArrayList<Entry> points = new ArrayList<>();
+
+
+
+    private TextView userName;
+    private TextView pointsDisplay;
+    private TextView rankDisplay;
+    private TextView leaderboardType;
+    private Button finder;
+
+    private int score =0;
+    private int userRank;
+
+
+    private void getUsersScore() {
+        BackgroundDataBaseTasks tempTask =new BackgroundDataBaseTasks(this);
+        tempTask.delegate = this;
+        SharedPreferences userInfo =  getSharedPreferences("user_info",
+                Context.MODE_PRIVATE);
+        String id = (userInfo.getString("id", ""));
+        String SQL = "WHERE id="+ id + ";";
+
+        String method = "friend";
+        try {
+            tempTask.execute(method, SQL).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 
     @Override
@@ -142,7 +212,46 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
 
         backgroundTask.delegate = this;
 
-        SharedPreferences settings = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        ProfilePictureView profilePictureView;
+        profilePictureView = (ProfilePictureView) findViewById(R.id.profilePicture);
+
+        final SharedPreferences userInfo =  getSharedPreferences("user_info",
+                Context.MODE_PRIVATE);
+
+        String id = userInfo.getString("id", "DEFAULT");
+        profilePictureView.setProfileId(id);
+
+        getUsersScore();
+
+        userName = (TextView) findViewById(R.id.user_name);
+        userName.setText(userInfo.getString("name", "DEFAULT"));
+        pointsDisplay = (TextView) findViewById(R.id.points_display);
+        pointsDisplay.setText(score + " points");
+        rankDisplay = (TextView) findViewById(R.id.rank_display);
+        leaderboardType = (TextView) findViewById(R.id.leaderboard_type);
+        leaderboardType.setText("Friends Leaderboard");
+
+        finder = (Button) findViewById(R.id.finder);
+        finder.setText("Find me");
+
+        //scrolls to user in the list
+        finder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println(userRank);
+                llm.scrollToPosition(userRank-1);
+            }
+        });
+
+
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        llm = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(llm);
+        adapter = new LeaderboardAdapter(getApplicationContext(), new ArrayList<User>());
+        recyclerView.setAdapter(adapter);
+
 
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
@@ -184,23 +293,5 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
         parameters.putString("fields", "id,name,friends");
         request.setParameters(parameters);
         request.executeAsync();
-    }
-
-    private void getUsersScore() {
-        BackgroundDataBaseTasks tempTask =new BackgroundDataBaseTasks(this);
-        tempTask.delegate = this;
-        SharedPreferences userInfo =  getSharedPreferences("user_info",
-                Context.MODE_PRIVATE);
-        String id = (userInfo.getString("id", ""));
-        String SQL = "WHERE id="+ id + ";";
-
-        String method = "friend";
-        try {
-            tempTask.execute(method, SQL).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
     }
 }
