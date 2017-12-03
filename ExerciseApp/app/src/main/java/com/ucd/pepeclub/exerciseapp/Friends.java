@@ -65,6 +65,25 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
 
     }
 
+    private int score =0;
+    @Override
+    public void userProcessFinish(String output) {
+        // after getting DB RESULT JASON
+        System.out.println("processFinish" + output);
+        JSONArray jArray = null;
+        try {
+            jArray = new JSONArray(output);
+
+            // Extract data from json and store into ArrayList
+            JSONObject json_data = jArray.getJSONObject(0);
+            score = Integer.parseInt(json_data.getString("score"));
+
+            System.out.println("processFinish-> points: " + score);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void onToggleClicked(View view) {
         boolean on = ((ToggleButton) view).isChecked();
         BackgroundDataBaseTasks tempTask = new BackgroundDataBaseTasks(this);
@@ -116,6 +135,8 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        getUsersScore();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
@@ -178,5 +199,23 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
         parameters.putString("fields", "id,name,friends");
         request.setParameters(parameters);
         request.executeAsync();
+    }
+
+    private void getUsersScore() {
+        BackgroundDataBaseTasks tempTask =new BackgroundDataBaseTasks(this);
+        tempTask.delegate = this;
+        SharedPreferences userInfo =  getSharedPreferences("user_info",
+                Context.MODE_PRIVATE);
+        String id = (userInfo.getString("id", ""));
+        String SQL = "WHERE id="+ id + ";";
+
+        String method = "friend";
+        try {
+            tempTask.execute(method, SQL).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 }

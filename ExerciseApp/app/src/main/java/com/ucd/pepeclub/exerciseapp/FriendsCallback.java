@@ -6,6 +6,9 @@ package com.ucd.pepeclub.exerciseapp;
 
 public interface FriendsCallback {
     void processFinish(String output);
+
+    void userProcessFinish(String output);
+
 }
 
 

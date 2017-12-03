@@ -163,6 +163,9 @@ public class AchievementActivity extends AppCompatActivity implements FriendsCal
 
     }
 
-
+    @Override
+    public void userProcessFinish(String output) {
+         processFinish(output);
+        }
 }
 

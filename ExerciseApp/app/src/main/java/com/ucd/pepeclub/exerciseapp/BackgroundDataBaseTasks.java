@@ -192,7 +192,17 @@ public class BackgroundDataBaseTasks extends AsyncTask<String, Void, String> {
             } else if (result.equals("no rows")) {
                 Toast.makeText(ctx, "No Results found for entered query", Toast.LENGTH_LONG).show();
             } else {
-                delegate.processFinish(result);
+                try {
+                    JSONArray jArray = new JSONArray(result);
+                    if(jArray.length()==1){
+                        delegate.userProcessFinish(result);
+                    }
+                    else{
+                        delegate.processFinish(result);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
         else{
