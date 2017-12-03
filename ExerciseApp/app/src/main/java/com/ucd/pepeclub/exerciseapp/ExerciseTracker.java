@@ -1,6 +1,9 @@
 package com.ucd.pepeclub.exerciseapp;
 
 import android.Manifest;
+import android.app.Activity;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -244,7 +247,19 @@ public class ExerciseTracker extends Fragment {
                         }
                         else {
                             int points = calculatePoints();
-                            postPointToDataBase(points);
+
+                            if (isNetworkAvailable()) {
+                                postPointToDataBase(points);
+                            }
+                            else {
+                                SharedPreferences sp = getActivity().getSharedPreferences("your_prefs", Activity.MODE_PRIVATE);
+                                int pointsStored = sp.getInt("POINTS_TO_SEND", 0);
+
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.putInt("POINTS_TO_SEND", pointsStored + points);
+                                editor.apply();
+                            }
+
                             createAnalysisActivity(points);
                         }
                     }
@@ -305,6 +320,7 @@ public class ExerciseTracker extends Fragment {
 
         //send id and score to php for new user storage
         String method = "post_score";
+
         backgroundTask.execute(method,score,id);
     }
 
@@ -344,6 +360,11 @@ public class ExerciseTracker extends Fragment {
         ExerciseTracker.this.startActivity(myIntent);
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
