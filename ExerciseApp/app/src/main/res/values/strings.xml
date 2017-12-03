@@ -5,13 +5,14 @@
     <string name="title_activity_facebook_login">FacebookLogin</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_main_menu">Main Menu</string>
-    <string name="title_activity_run_tracker">Press \'start\' to track your run!</string>
     <string name="title_activity_friends">Friends</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_run_analysis">Stats about your run!</string>
     <string name="title_activity_achievement">AchievementActivity</string>
-
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="runtracker_start_button">Start</string>
+    <string name="runtracker_stop_button">Stop</string>
+    <string name="runtracker_start_time">00:00:00</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>

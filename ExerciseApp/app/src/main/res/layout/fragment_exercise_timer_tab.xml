@@ -1,0 +1,35 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ucd.pepeclub.exerciseapp.ExerciseTracker">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/timerTextView"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:layout_marginTop="90dp"
+            android:gravity="center"
+            android:maxLines="14"
+            android:scrollbars="vertical"
+            android:text="00:00:00"
+            android:textSize="85sp" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="274dp"
+            android:layout_height="105dp"
+            android:layout_marginTop="88dp"
+            android:baselineAligned="false"
+            android:text="Start"
+            android:layout_gravity="center"
+            android:textAllCaps="false"
+            android:textSize="25sp" />
+    </LinearLayout>
+
+</FrameLayout>

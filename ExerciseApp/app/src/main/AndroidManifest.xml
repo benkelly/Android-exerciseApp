@@ -12,7 +12,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RunTracker" />
 
         <service android:name=".GpsService" />
 
@@ -55,7 +54,7 @@
             android:label="@string/title_activity_friends"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".RunAnalysis"
+            android:name=".ExerciseAnalysis"
             android:label="@string/title_activity_run_analysis"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Settings" />
@@ -64,12 +63,23 @@
             android:label="@string/title_activity_achievement"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
+        <activity
+            android:name=".ExerciseTabs"
+            android:label="Exercise Monitor"
+            android:parentActivityName=".MainMenu"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ucd.pepeclub.exerciseapp.MainMenu" />
+        </activity>
+
         <provider
             android:authorities="com.facebook.app.FacebookContentProvider{1517397991688698}"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true" />
 
-    </application>
 
+
+    </application>
 
 </manifest>

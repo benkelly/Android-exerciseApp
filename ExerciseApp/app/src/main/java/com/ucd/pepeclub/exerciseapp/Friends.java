@@ -35,6 +35,7 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
         JSONArray jArray = null;
         try {
             jArray = new JSONArray(output);
+
             // Extract data from json and store into ArrayList
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject json_data = jArray.getJSONObject(i);
@@ -157,7 +158,6 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             }
-
 
                         } catch (JSONException e) {
                             e.printStackTrace();

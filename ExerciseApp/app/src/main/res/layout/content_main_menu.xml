@@ -22,7 +22,7 @@
         android:id="@+id/runTracker_button"
         android:layout_width="174dp"
         android:layout_height="71dp"
-        android:text="Start Run"
+        android:text="Exercise Monitor"
         android:textSize="17sp"
         android:textAllCaps="false"
         tools:layout_editor_absoluteX="148dp"

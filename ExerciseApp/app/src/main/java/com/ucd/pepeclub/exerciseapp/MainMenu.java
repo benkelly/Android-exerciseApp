@@ -55,7 +55,7 @@ public class MainMenu extends AppCompatActivity {
         toRunTracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), RunTracker.class);
+                Intent i = new Intent(getApplicationContext(),ExerciseTabs.class);
                 startActivity(i);
             }
         });
