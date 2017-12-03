@@ -45,7 +45,6 @@ public class ExerciseTabs extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
         for (int i = 0; i < tabTitles.length; i++) {
-            Log.wtf("topkek", tabTitles[i]);
             tabLayout.addTab(tabLayout.newTab().setText(tabTitles[i]));
         }
 
@@ -79,22 +78,20 @@ public class ExerciseTabs extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            ExerciseTracker et = new ExerciseTracker();
+            et.EXERCISE_NAME = tabTitles[position].toLowerCase();
+            et.backgroundTask = new BackgroundDataBaseTasks(getApplicationContext());
+
             switch(position) {
                 case 0:
-                    ExerciseTracker et1 = new ExerciseTracker();
-                    et1.EXERCISE_NAME = "walk";
-                    et1.MAX_AVERAGE_SPEED = 4;
-                    return et1;
+                    et.MAX_AVERAGE_SPEED = 4;
+                    return et;
                 case 1:
-                    ExerciseTracker et2 = new ExerciseTracker();
-                    et2.EXERCISE_NAME = "run";
-                    et2.MAX_AVERAGE_SPEED = 10;
-                    return et2;
+                    et.MAX_AVERAGE_SPEED = 10;
+                    return et;
                 case 2:
-                    ExerciseTracker et3 = new ExerciseTracker();
-                    et3.EXERCISE_NAME = "cycle";
-                    et3.MAX_AVERAGE_SPEED = 15;
-                    return et3;
+                    et.MAX_AVERAGE_SPEED = 15;
+                    return et;
             }
 
             return null;

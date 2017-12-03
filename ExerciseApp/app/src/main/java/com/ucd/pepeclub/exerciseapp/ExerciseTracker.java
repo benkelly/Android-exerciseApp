@@ -14,27 +14,24 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class ExerciseTracker extends Fragment {
 
-    BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(getActivity());
+    BackgroundDataBaseTasks backgroundTask;
 
     private Button button;
     private BroadcastReceiver broadcastReceiver;
     private TextView timerTextView;
     private boolean running;
-    private FragmentManager fragmentManager;
 
     private ArrayList<Double> speeds = new ArrayList<>();
     private ArrayList<Double> altitudes = new ArrayList<>();
@@ -45,6 +42,7 @@ public class ExerciseTracker extends Fragment {
     private long previousTime = -1;
     private double averageSpeed = -1;
 
+    private int dataPoints = 0;
     private double highestAltitude = -1;
     private double lowestAltitude = 90000000;
     private double highestSpeed = -1;
@@ -103,8 +101,6 @@ public class ExerciseTracker extends Fragment {
         if(!verifyRuntimePermissions())
             enableButtons();
 
-        fragmentManager = getActivity().getFragmentManager();
-
         return rootView;
     }
 
@@ -122,6 +118,7 @@ public class ExerciseTracker extends Fragment {
 
                     String[] data = res.split(",");
 
+                    dataPoints = Integer.parseInt(data[0]);
                     double lat = Double.parseDouble(data[1]);
                     double lon = Double.parseDouble(data[2]);
                     double alt = Double.parseDouble(data[3]);
@@ -228,7 +225,7 @@ public class ExerciseTracker extends Fragment {
                     getActivity().stopService(i);
                     timerHandler.removeCallbacks(timerRunnable);
 
-                    if (altitudes.size() < 10) {
+                    if (dataPoints < 13) {
                         resetActivity();
 
                         String msg = "    Not enough GPS data collected.\nEnsure your GPS settings are correct.";
