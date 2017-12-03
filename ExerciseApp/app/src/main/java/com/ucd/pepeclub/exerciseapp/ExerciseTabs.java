@@ -64,8 +64,6 @@ public class ExerciseTabs extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

@@ -199,5 +199,4 @@ public class BackgroundDataBaseTasks extends AsyncTask<String, Void, String> {
             Toast.makeText(ctx, "no internet... :(", Toast.LENGTH_SHORT).show();
         }
     }
-
 }

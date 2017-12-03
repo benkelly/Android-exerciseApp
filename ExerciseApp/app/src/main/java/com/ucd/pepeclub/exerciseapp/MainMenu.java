@@ -1,5 +1,6 @@
 package com.ucd.pepeclub.exerciseapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -45,7 +46,6 @@ public class MainMenu extends AppCompatActivity {
         toAchievements = findViewById(R.id.achievements_button);
         logoutFacebook = findViewById(R.id.logout_facebook_button);
 
-
         toFriendsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,8 +79,21 @@ public class MainMenu extends AppCompatActivity {
                 Toast toast = Toast.makeText(getApplicationContext(), "Logout successful!", Toast.LENGTH_SHORT);
                 toast.show();
                 startActivity(intent);
+                System.exit(0);
             }
         });
+
+        SharedPreferences sp = getSharedPreferences("your_prefs", Activity.MODE_PRIVATE);
+        int pointsStored = sp.getInt("POINTS_TO_SEND", 0);
+
+        if (pointsStored > 0) {
+            BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(this);
+            SharedPreferences userInfo =  getSharedPreferences("user_info", Context.MODE_PRIVATE);
+
+            String id = (userInfo.getString("id", ""));
+            String method = "post_score";
+            backgroundTask.execute(method,"" + pointsStored,id);
+        }
 
     }
 
