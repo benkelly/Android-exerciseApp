@@ -57,7 +57,6 @@
             android:name=".ExerciseAnalysis"
             android:label="@string/title_activity_run_analysis"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Settings" />
         <activity
             android:name=".AchievementActivity"
             android:label="@string/title_activity_achievement"

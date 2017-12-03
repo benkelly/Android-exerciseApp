@@ -103,7 +103,8 @@ public class ExerciseAnalysis extends AppCompatActivity {
         double speedStep = (highestSpeed - lowestSpeed) / stepCount;
 
         for (float i = (float)lowestSpeed; i < highestSpeed; i += speedStep) {
-            // ??? i don't really get how this works but sure
+            if (count >= xAxis.length || count >= newSpeeds.size()) break;
+
             xAxis[count] = "";
             yAxis.add(new Entry(count, (float)(double)newSpeeds.get(count++)));
         }
@@ -132,7 +133,8 @@ public class ExerciseAnalysis extends AppCompatActivity {
         double altStep = (highestAltitude - lowestAltitude) / stepCount;
 
         for (float i = (float)lowestAltitude; i < highestAltitude; i += altStep) {
-            // ??? i don't really get how this works but sure
+            if (count >= xAxis.length || count >= altitudes.length) break;
+
             xAxis[count] = "";
             yAxis.add(new Entry(count, (float)altitudes[count++]));
         }

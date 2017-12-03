@@ -13,10 +13,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,12 +38,12 @@ public class MainMenu extends AppCompatActivity {
         Button toFriendsMenu;
         Button toRunTracker;
         Button toAchievements;
-        Button settings;
+        Button logoutFacebook;
 
         toFriendsMenu = findViewById(R.id.friends_button);
         toRunTracker = findViewById(R.id.runTracker_button);
         toAchievements = findViewById(R.id.achievements_button);
-        settings = findViewById(R.id.settings_button);
+        logoutFacebook = findViewById(R.id.logout_facebook_button);
 
 
         toFriendsMenu.setOnClickListener(new View.OnClickListener() {
@@ -68,11 +70,15 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
-        settings.setOnClickListener(new View.OnClickListener() {
+        logoutFacebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), Settings.class);
-                startActivity(i);
+                Intent intent = new Intent(getApplicationContext(), FacebookLogin.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                LoginManager.getInstance().logOut();
+                Toast toast = Toast.makeText(getApplicationContext(), "Logout successful!", Toast.LENGTH_SHORT);
+                toast.show();
+                startActivity(intent);
             }
         });
 

@@ -22,6 +22,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.share.ShareApi;
+import com.facebook.share.internal.ShareFeedContent;
 import com.facebook.share.model.*;
 import com.facebook.share.widget.ShareDialog;
 import com.twitter.sdk.android.core.DefaultLogger;
@@ -107,6 +108,7 @@ public class AchievementActivity extends AppCompatActivity implements FriendsCal
         button = (Button) findViewById(R.id.button);
         shareDialog = new ShareDialog(this);
         button.setOnClickListener(new View.OnClickListener() {
+<<<<<<< HEAD
                                       @Override
                                       public void onClick(View view) {
 
@@ -122,8 +124,23 @@ public class AchievementActivity extends AppCompatActivity implements FriendsCal
                                       }
                                   }
         );
+=======
+            @Override
+            public void onClick(View view) {
+                builder.text("just setting up my Twitter Kit.");
+                builder.show();
+                /*Intent share = new Intent(Intent.ACTION_SEND);
+                share.putExtra(Intent.EXTRA_TEXT, "text");
+                startActivity(Intent.createChooser(share, "Share this via"));*/
+>>>>>>> 6655961a200f707e3ade8ff68643cdae2388b9be
 
+                /*ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("https://twitter.com/Renvark/status/913042367904718848")).setContentDescription("test").build();
+                shareDialog.show(content);*/
+            }
+        });
     }
+<<<<<<< HEAD
 
     @Override
     public void processFinish(String output) {
@@ -184,5 +201,7 @@ public class AchievementActivity extends AppCompatActivity implements FriendsCal
     }
 
 
+=======
+>>>>>>> 6655961a200f707e3ade8ff68643cdae2388b9be
 }
 
