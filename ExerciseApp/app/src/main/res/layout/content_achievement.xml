@@ -27,16 +27,16 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="344dp"
+        android:layout_width="1000dp"
         android:layout_height="100dp"
         android:layout_below="@+id/timerTextView"
         android:layout_centerHorizontal="true"
+        android:background="#0084b4"
         android:baselineAligned="false"
-        android:text="Tweet your Score!"
+        android:text="🐦Tweet your Score!🐦"
         android:textAllCaps="false"
         android:textSize="25sp"
-        tools:layout_editor_absoluteY="171dp"
-        />
+        tools:layout_editor_absoluteY="171dp" />
 
 
 </LinearLayout>

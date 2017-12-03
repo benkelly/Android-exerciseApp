@@ -7,12 +7,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="bottom"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/timerTextView"
             android:layout_width="match_parent"
-            android:layout_height="190dp"
+            android:layout_height="161dp"
             android:layout_marginTop="90dp"
             android:gravity="center"
             android:maxLines="14"
@@ -22,12 +23,13 @@
 
         <Button
             android:id="@+id/button"
-            android:layout_width="274dp"
-            android:layout_height="105dp"
+            android:layout_width="1000dp"
+            android:layout_height="142dp"
+            android:layout_gravity="center"
             android:layout_marginTop="88dp"
+            android:backgroundTint="@color/colorAccent"
             android:baselineAligned="false"
             android:text="Start"
-            android:layout_gravity="center"
             android:textAllCaps="false"
             android:textSize="25sp" />
     </LinearLayout>
