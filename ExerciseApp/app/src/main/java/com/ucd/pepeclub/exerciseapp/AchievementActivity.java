@@ -64,8 +64,6 @@ public class AchievementActivity extends AppCompatActivity {
                 shareDialog.show(content);*/
             }
         });
-
     }
-
 }
 

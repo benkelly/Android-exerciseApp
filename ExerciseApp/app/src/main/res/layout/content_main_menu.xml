@@ -51,10 +51,10 @@
         tools:layout_editor_absoluteY="16dp" />
 
     <Button
-        android:id="@+id/settings_button"
+        android:id="@+id/logout_facebook_button"
         android:layout_width="174dp"
         android:layout_height="71dp"
-        android:text="Settings"
+        android:text="Logout"
         android:textAllCaps="false"
         android:textSize="17sp"
         tools:layout_editor_absoluteX="148dp"
