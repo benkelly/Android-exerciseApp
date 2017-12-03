@@ -137,45 +137,48 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
                     @Override
                     public void onCompleted(JSONObject jsonObject,
                                             GraphResponse response) {
-                        try {
-                            JSONObject js = (JSONObject) jsonObject.get("friends");
-                            friends = (JSONArray) js.get("data");
-
-                            for (int i = 0; i < friends.length(); i++) {
-                                String str = friends.get(i).toString();
-                                str = str.replaceAll("[^0-9]", "");
-                                friendSQL += str + " or id=";
-                            }
-                            friendSQL = friendSQL.substring(0, friendSQL.length() - 7);
-                            friendSQL += ";";
-                            System.out.println(friendSQL);
-
-                            String method = "friend";
+                        if (jsonObject != null) {
                             try {
-                                backgroundTask.execute(method, friendSQL).get();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
+                                JSONObject js = (JSONObject) jsonObject.get("friends");
+                                if (js != null) {
+                                    friends = (JSONArray) js.get("data");
+
+                                    for (int i = 0; i < friends.length(); i++) {
+                                        String str = friends.get(i).toString();
+                                        str = str.replaceAll("[^0-9]", "");
+                                        friendSQL += str + " or id=";
+                                    }
+                                    friendSQL = friendSQL.substring(0, friendSQL.length() - 7);
+                                    friendSQL += ";";
+                                    System.out.println(friendSQL);
+
+                                    String method = "friend";
+                                    try {
+                                        backgroundTask.execute(method, friendSQL).get();
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            Collections.sort(points, new EntryComparator());
+
+                            ArrayList<String> pointsList = new ArrayList<String>();
+                            for (Entry entry : points) {
+                                pointsList.add(entry.name);
+                                pointsList.add("   " + entry.points);
+                            }
+
+                            gv = (GridView) findViewById(R.id.grid_view);
+                            ArrayAdapter<String> gridViewArrayAdapter = new ArrayAdapter<String>
+                                    (getApplicationContext(), R.layout.friends_grid, pointsList);
+
+                            gv.setAdapter(gridViewArrayAdapter);
                         }
-
-                        Collections.sort(points, new EntryComparator());
-
-                        ArrayList<String> pointsList = new ArrayList<String>();
-                        for (Entry entry : points) {
-                            pointsList.add(entry.name);
-                            pointsList.add("   " + entry.points);
-                        }
-
-                        gv = (GridView) findViewById(R.id.grid_view);
-                        ArrayAdapter<String> gridViewArrayAdapter = new ArrayAdapter<String>
-                                (getApplicationContext(), R.layout.friends_grid, pointsList);
-
-                        gv.setAdapter(gridViewArrayAdapter);
                     }
                 });
         Bundle parameters = new Bundle();
