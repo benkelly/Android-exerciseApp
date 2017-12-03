@@ -135,8 +135,7 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        getUsersScore();
+        //getUsersScore();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
@@ -178,20 +177,6 @@ public class Friends extends AppCompatActivity implements FriendsCallback {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
-                            Collections.sort(points, new EntryComparator());
-
-                            ArrayList<String> pointsList = new ArrayList<String>();
-                            for (Entry entry : points) {
-                                pointsList.add(entry.name);
-                                pointsList.add("   " + entry.points);
-                            }
-
-                            gv = (GridView) findViewById(R.id.grid_view);
-                            ArrayAdapter<String> gridViewArrayAdapter = new ArrayAdapter<String>
-                                    (getApplicationContext(), R.layout.friends_grid, pointsList);
-
-                            gv.setAdapter(gridViewArrayAdapter);
                         }
                     }
                 });
