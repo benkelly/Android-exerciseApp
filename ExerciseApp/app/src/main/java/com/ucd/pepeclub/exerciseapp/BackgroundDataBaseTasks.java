@@ -174,7 +174,6 @@ public class BackgroundDataBaseTasks extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-
         if(result!=null) {
             if (result.equals("Registration Success...")) {
                 SharedPreferences userInfo =  ctx.getSharedPreferences("user_info",

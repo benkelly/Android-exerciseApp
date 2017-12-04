@@ -8,10 +8,9 @@ Darragh Mulhall 14318776
 */
 package com.ucd.pepeclub.exerciseapp;
 
-/**
- * Created by ben on 22/11/2017.
- */
-
+/* Interface need to request the returning data from BackgroundDataBaseTasks
+*  back to the called class which implements this
+* */
 public interface FriendsCallback {
     void processFinish(String output);
 

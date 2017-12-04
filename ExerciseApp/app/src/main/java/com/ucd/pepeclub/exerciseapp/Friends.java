@@ -38,6 +38,10 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
     BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(this);
     private String friendSQL = "WHERE id=";
 
+
+    /* called when processFinish Async task complete,
+    *  when list of scores are requested
+    * */
     @Override
     public void processFinish(String output) {
         // after getting DB RESULT JASON
@@ -95,6 +99,9 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
         recyclerView.setAdapter(adapter);
     }
 
+    /* called when userProcessFinish Async task complete,
+    *  when only user score is requested
+    * */
     @Override
     public void userProcessFinish(String output) {
         // after getting DB RESULT JASON
@@ -145,6 +152,9 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
 
     }
 
+    /* when toggle pressed, list clears and refreshes with
+    * global or friends from DB
+    * */
     public void onToggleClicked(View view) {
         boolean on = ((ToggleButton) view).isChecked();
         BackgroundDataBaseTasks tempTask = new BackgroundDataBaseTasks(this);
@@ -211,6 +221,8 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
     private int userRank;
 
 
+    /* sends DB request to get user's score.
+    * */
     private void getUsersScore() {
         BackgroundDataBaseTasks tempTask =new BackgroundDataBaseTasks(this);
         tempTask.delegate = this;
