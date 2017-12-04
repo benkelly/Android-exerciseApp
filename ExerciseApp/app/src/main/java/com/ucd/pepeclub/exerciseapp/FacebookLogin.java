@@ -39,7 +39,18 @@ public class FacebookLogin extends AppCompatActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        /*try {
+            PackageInfo info = getPackageManager().getPackageInfo("com.ucd.pepeclub.exerciseapp", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e("KeyHash:", e.toString());
+        } catch (NoSuchAlgorithmException e) {
+            Log.e("KeyHash:", e.toString());
+        }*/
         boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
         if (loggedIn) {
             Intent intent = new Intent(FacebookLogin.this, MainMenu.class);

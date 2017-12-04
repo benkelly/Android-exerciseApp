@@ -1,28 +1,20 @@
+/*
+This Activity deals with the Achievements
+view and the tweeting
+ */
 package com.ucd.pepeclub.exerciseapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
-import com.facebook.share.ShareApi;
-import com.facebook.share.model.*;
 import com.facebook.share.widget.ShareDialog;
 import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Twitter;
@@ -35,7 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 public class AchievementActivity extends AppCompatActivity implements FriendsCallback {
@@ -90,8 +81,6 @@ public class AchievementActivity extends AppCompatActivity implements FriendsCal
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievement);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
         //The below is from the twitter dev tutorial
         //https://dev.twitter.com/twitterkit/android/installation
         Twitter.initialize(this);
