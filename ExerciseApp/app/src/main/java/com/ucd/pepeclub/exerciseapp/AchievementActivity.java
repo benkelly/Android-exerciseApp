@@ -1,7 +1,11 @@
 /*
-This Activity deals with the Achievements
-view and the tweeting
- */
+Active Go
+
+Sam Kennan 14320061,
+Benjamin Kelly 14700869,
+Eoin Kerr 13366801,
+Darragh Mulhall 14318776
+*/
 package com.ucd.pepeclub.exerciseapp;
 
 import android.content.Context;
