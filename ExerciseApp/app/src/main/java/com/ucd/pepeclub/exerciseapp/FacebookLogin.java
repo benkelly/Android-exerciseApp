@@ -34,7 +34,6 @@ public class FacebookLogin extends AppCompatActivity {
 
     BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(this);
 
-
     CallbackManager callbackManager;
     LoginButton loginButton;
 

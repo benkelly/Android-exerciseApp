@@ -80,8 +80,6 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
         }
 
 
-
-
         rankDisplay.setText("Rank #"+userRank+"/"+users.size());
 
         adapter.setUserList(users);
@@ -105,6 +103,38 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        SharedPreferences userInfo =  getSharedPreferences("user_info",
+                Context.MODE_PRIVATE);
+
+
+        userName = (TextView) findViewById(R.id.user_name);
+        userName.setText(userInfo.getString("name", "DEFAULT"));
+        pointsDisplay = (TextView) findViewById(R.id.points_display);
+        pointsDisplay.setText(score + " points");
+        rankDisplay = (TextView) findViewById(R.id.rank_display);
+        leaderboardType = (TextView) findViewById(R.id.leaderboard_type);
+        leaderboardType.setText("Friends Leaderboard");
+
+        finder = (Button) findViewById(R.id.finder);
+        finder.setText("Find me");
+
+        //scrolls to user in the list
+        finder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println(userRank);
+                llm.scrollToPosition(userRank-1);
+            }
+        });
+
+
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        llm = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(llm);
+        adapter = new LeaderboardAdapter(getApplicationContext(), new ArrayList<User>());
+        recyclerView.setAdapter(adapter);
+
     }
 
     public void onToggleClicked(View view) {
@@ -214,35 +244,6 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
         profilePictureView.setProfileId(id);
 
         getUsersScore();
-
-        userName = (TextView) findViewById(R.id.user_name);
-        userName.setText(userInfo.getString("name", "DEFAULT"));
-        pointsDisplay = (TextView) findViewById(R.id.points_display);
-        pointsDisplay.setText(score + " points");
-        rankDisplay = (TextView) findViewById(R.id.rank_display);
-        leaderboardType = (TextView) findViewById(R.id.leaderboard_type);
-        leaderboardType.setText("Friends Leaderboard");
-
-        finder = (Button) findViewById(R.id.finder);
-        finder.setText("Find me");
-
-        //scrolls to user in the list
-        finder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println(userRank);
-                llm.scrollToPosition(userRank-1);
-            }
-        });
-
-
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
-        llm = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(llm);
-        adapter = new LeaderboardAdapter(getApplicationContext(), new ArrayList<User>());
-        recyclerView.setAdapter(adapter);
-
 
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),

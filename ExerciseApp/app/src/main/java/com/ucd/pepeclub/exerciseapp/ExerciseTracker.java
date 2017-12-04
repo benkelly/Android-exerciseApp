@@ -306,6 +306,8 @@ public class ExerciseTracker extends Fragment {
     }
 
     private void postPointToDataBase(int points) {
+        BackgroundDataBaseTasks tempTask = new BackgroundDataBaseTasks(backgroundTask.ctx);
+
         System.out.println("postPointToDataBase: "+points);
 
         SharedPreferences userInfo =  getActivity().getSharedPreferences("user_info",
@@ -315,7 +317,7 @@ public class ExerciseTracker extends Fragment {
         String score = Integer.toString(points);
         String method = "post_score";
 
-        backgroundTask.execute(method,score,id);
+        tempTask.execute(method,score,id);
     }
 
     private boolean verifyRuntimePermissions() {
