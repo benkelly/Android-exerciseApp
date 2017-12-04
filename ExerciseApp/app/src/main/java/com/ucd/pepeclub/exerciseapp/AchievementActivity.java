@@ -110,7 +110,7 @@ public class AchievementActivity extends AppCompatActivity implements FriendsCal
         );
 
     }
-
+    // called when onPostExicute Async task complete.
     @Override
     public void processFinish(String output) {
         // after getting DB RESULT JASON
