@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import java.security.MessageDigest;
 import java.util.Arrays;
 
+//allows login to the app using the facebook login feature of the facebook sdk
 public class FacebookLogin extends AppCompatActivity {
 
     BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(this);
@@ -45,21 +46,11 @@ public class FacebookLogin extends AppCompatActivity {
     CallbackManager callbackManager;
     LoginButton loginButton;
 
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*try {
-            PackageInfo info = getPackageManager().getPackageInfo("com.ucd.pepeclub.exerciseapp", PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e("KeyHash:", e.toString());
-        } catch (NoSuchAlgorithmException e) {
-            Log.e("KeyHash:", e.toString());
-        }*/
         boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
+        //if the user is already logged in skip login prompt and go straight to main menu
         if (loggedIn) {
             Intent intent = new Intent(FacebookLogin.this, MainMenu.class);
             startActivity(intent);
@@ -68,21 +59,11 @@ public class FacebookLogin extends AppCompatActivity {
         else {
             setContentView(R.layout.activity_facebook_login);
 
-            try {
-                PackageInfo info = getPackageManager().getPackageInfo("com.ucd.pepeclub.exerciseapp", PackageManager.GET_SIGNATURES);
-                for (Signature signature : info.signatures) {
-                    MessageDigest md = MessageDigest.getInstance("SHA");
-                    md.update(signature.toByteArray());
-                    Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-                }
-            } catch (Exception e) {
-                Log.e("KeyHash:", e.toString());
-            }
-
             loginButton = (LoginButton) findViewById(R.id.login_button);
             loginButton.setReadPermissions(Arrays.asList("public_profile", "user_friends"));
             callbackManager = CallbackManager.Factory.create();
             loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                //if the login succeeds store id and name of user and go to main menu
                 @Override
                 public void onSuccess(LoginResult loginResult) {
                     loginButton.setVisibility(View.GONE);
@@ -123,9 +104,7 @@ public class FacebookLogin extends AppCompatActivity {
                     request.setParameters(parameters);
                     request.executeAsync();
 
-
                     Intent intent = new Intent(FacebookLogin.this, MainMenu.class);
-
                     startActivity(intent);
                     finish();
                 }
@@ -137,8 +116,6 @@ public class FacebookLogin extends AppCompatActivity {
 
                 @Override
                 public void onError(FacebookException error) {
-                    Log.wtf("Login error: ", error.getMessage());
-
                     if (!isNetworkAvailable()) {
                         Toast toast = Toast.makeText(getApplicationContext(), "No internet access! ", Toast.LENGTH_SHORT);
                         toast.show();
@@ -148,18 +125,18 @@ public class FacebookLogin extends AppCompatActivity {
         }
     }
 
+    //checks is network available
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
         return activeNetworkInfo != null;
     }
 
+    //required as part of facebook login to work
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // if you don't add following block,
         // your registered `FacebookCallback` won't be called
-
-        Log.wtf("Facebook Login", requestCode + " " + resultCode + " " + data.getAction());
 
         if (callbackManager.onActivityResult(requestCode, resultCode, data)) {
             return;

@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
 
+//class to represent the friends leaderboard
 public class Friends extends AppCompatActivity implements  FriendsCallback{
 
     BackgroundDataBaseTasks backgroundTask = new BackgroundDataBaseTasks(this);
@@ -70,19 +71,10 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-
-
         Collections.sort(points, new EntryComparator());
 
 
         ArrayList<User> users = new ArrayList<>();
-
-
-
-
-
         for(int i=0; i<points.size(); i++){
             users.add(new User("#"+(i+1), points.get(i).name, Integer.toString(points.get(i).points), points.get(i).id));
             if(users.get(i).getId().equals(id)){
@@ -90,10 +82,7 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
             }
 
         }
-
-
         rankDisplay.setText("Rank #"+userRank+"/"+users.size());
-
         adapter.setUserList(users);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
@@ -152,9 +141,7 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
 
     }
 
-    /* when toggle pressed, list clears and refreshes with
-    * global or friends from DB
-    * */
+    //change leaderboard type - global and friends
     public void onToggleClicked(View view) {
         boolean on = ((ToggleButton) view).isChecked();
         BackgroundDataBaseTasks tempTask = new BackgroundDataBaseTasks(this);
@@ -221,9 +208,9 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
     private int userRank;
 
 
-    /* sends DB request to get user's score.
-    * */
-    private void getUsersScore() {
+
+    //retrieve the score of the current user and store in score variable - uses background database task to get score
+    private void setUsersScore() {
         BackgroundDataBaseTasks tempTask =new BackgroundDataBaseTasks(this);
         tempTask.delegate = this;
         SharedPreferences userInfo =  getSharedPreferences("user_info",
@@ -246,25 +233,25 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //getUsersScore();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
         backgroundTask.delegate = this;
 
 
+        //setting profile pic at top of page
         ProfilePictureView profilePictureView;
         profilePictureView = (ProfilePictureView) findViewById(R.id.profilePicture);
 
         final SharedPreferences userInfo =  getSharedPreferences("user_info",
                 Context.MODE_PRIVATE);
-
         String id = userInfo.getString("id", "DEFAULT");
         profilePictureView.setProfileId(id);
 
-        getUsersScore();
 
+        setUsersScore();
+
+        //sending request to facebook to get the friends of the user and make sql string to get data of all these friends
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
@@ -284,7 +271,6 @@ public class Friends extends AppCompatActivity implements  FriendsCallback{
                                     }
                                     friendSQL = friendSQL.substring(0, friendSQL.length() - 7);
                                     friendSQL += ";";
-                                    System.out.println(friendSQL);
 
                                     String method = "friend";
                                     try {
