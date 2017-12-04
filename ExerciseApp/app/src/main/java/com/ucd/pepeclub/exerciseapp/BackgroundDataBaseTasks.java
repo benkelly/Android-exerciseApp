@@ -51,14 +51,13 @@ public class BackgroundDataBaseTasks extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... params) {
+        // if not isNetworkAvailable, skip to avoid halting
         if (new CheckNetwork(ctx).isNetworkAvailable()) {
-
             String reg_user_url = "http://benjamin.ie/exerciseapp/add_user.php";
             String friend_search_url = "http://benjamin.ie/exerciseapp/friend_search.php";
             String update_score_url = "http://benjamin.ie/exerciseapp/update_score.php";
-            //String reg_user_url = "http://benjamin.ie/exerciseapp/reg_user.php";
-            //String login_url = "http://10.0.2.2/webapp/login.php";
             String method = params[0];
+            // register logged in user to db
             if (method.equals("register")) {
                 String name = params[1];
                 String id = params[2];
@@ -85,6 +84,7 @@ public class BackgroundDataBaseTasks extends AsyncTask<String, Void, String> {
                     e.printStackTrace();
                 }
             }
+            // updates users score after run
             if (method.equals("post_score")) {
                 String score = params[1];
                 String id = params[2];
@@ -110,6 +110,7 @@ public class BackgroundDataBaseTasks extends AsyncTask<String, Void, String> {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                // GETs scores for ids in request
             } else if (method.equals("friend")) {
                 HttpURLConnection conn;
                 String searchQuery = params[1];
@@ -166,7 +167,6 @@ public class BackgroundDataBaseTasks extends AsyncTask<String, Void, String> {
         }
         else{
             System.out.println("NO INTERNET");
-            //Toast.makeText(ctx, "no internet!", Toast.LENGTH_SHORT).show();
         }
         return null;
     }
@@ -181,7 +181,6 @@ public class BackgroundDataBaseTasks extends AsyncTask<String, Void, String> {
 
         if(result!=null) {
             if (result.equals("Registration Success...")) {
-
                 SharedPreferences userInfo =  ctx.getSharedPreferences("user_info",
                         Context.MODE_PRIVATE);
                 String name = (userInfo.getString("name", ""));
