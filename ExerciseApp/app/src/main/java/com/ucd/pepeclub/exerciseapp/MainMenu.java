@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.facebook.login.LoginManager;
 
 public class MainMenu extends AppCompatActivity {
-
+    //the main menu screen where other activities are executed
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

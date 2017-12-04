@@ -55,6 +55,7 @@ public class AchievementActivity extends AppCompatActivity implements FriendsCal
 
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
+    //display the users achievements and give them the option to tweet
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         backgroundTask.delegate = this;

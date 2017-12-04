@@ -19,7 +19,7 @@ public class CheckNetwork {
     public CheckNetwork(Context context) {
         this.context = context;
     }
-
+    //looks for an active network connection
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
