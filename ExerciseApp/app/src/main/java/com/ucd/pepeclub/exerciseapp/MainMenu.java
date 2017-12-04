@@ -79,7 +79,7 @@ public class MainMenu extends AppCompatActivity {
                 Toast toast = Toast.makeText(getApplicationContext(), "Logout successful!", Toast.LENGTH_SHORT);
                 toast.show();
                 startActivity(intent);
-                System.exit(0);
+                finish();
             }
         });
 
@@ -94,7 +94,5 @@ public class MainMenu extends AppCompatActivity {
             String method = "post_score";
             backgroundTask.execute(method,"" + pointsStored,id);
         }
-
     }
-
 }

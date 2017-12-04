@@ -12,7 +12,9 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 
-public class GpsService extends Service {
+// Followed roughly from this tutorial:
+// https://www.youtube.com/watch?v=lvcGh2ZgHeA
+public class GpsDataRetrieval extends Service {
 
     private LocationListener listener;
     private LocationManager locationManager;
@@ -24,7 +26,6 @@ public class GpsService extends Service {
         return null;
     }
 
-    // can suppress warning since we check for permissions
     @SuppressLint("MissingPermission")
     public void onCreate() {
         listener = new LocationListener() {
@@ -32,17 +33,16 @@ public class GpsService extends Service {
             public void onLocationChanged(Location location) {
                 Intent intent = new Intent("location_update");
                 long epoch = System.currentTimeMillis();
-                intent.putExtra("coordinates", count++ + "," + location.getLongitude() + "," + location.getLatitude() + "," + location.getAltitude() + "," + epoch);
+                intent.putExtra("coordinates",count++ + "," + location.getLongitude() + "," +
+                                location.getLatitude() + "," + location.getAltitude() + "," + epoch);
                 sendBroadcast(intent);
             }
 
             @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-            }
+            public void onStatusChanged(String s, int i, Bundle bundle) {}
 
             @Override
-            public void onProviderEnabled(String s) {
-            }
+            public void onProviderEnabled(String s) {}
 
             @Override
             public void onProviderDisabled(String s) {
@@ -54,7 +54,6 @@ public class GpsService extends Service {
 
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
-        // update every 3 seconds (ignore distance with 0)
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0, listener);
     }
 
@@ -64,6 +63,5 @@ public class GpsService extends Service {
             locationManager.removeUpdates(listener);
         }
     }
-
 
 }

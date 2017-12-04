@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <service android:name=".GpsService" />
+        <service android:name=".GpsDataRetrieval" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

@@ -173,6 +173,7 @@ public class ExerciseTracker extends Fragment {
         }
     }
 
+    // Return distance in metres between two latitude and longitude points.
     private double calculateDistance(double lat, double lon) {
         double earthRadius = 6371000.;
 
@@ -188,10 +189,12 @@ public class ExerciseTracker extends Fragment {
         return earthRadius * c;
     }
 
+    // Return speed in metres per second when given distance and time.
     private double calculateSpeed(double dist, long epoch) {
         return dist / ((double)((epoch - previousTime)) / 1000);
     }
 
+    // The haversine function. Used when calculating distance between two latitude longitude points.
     public static double haversine(double angle) {
         return Math.pow(Math.sin(angle / 2), 2);
     }
@@ -200,6 +203,7 @@ public class ExerciseTracker extends Fragment {
         averageSpeed = distance / exerciseTime; // metres per second
     }
 
+    // Return the number of seconds in day after a certain time in format hh:mm:ss
     private long getSecondsFromTime(String time) {
         // time hh:mm:ss
         String[] parts = time.split(":");
@@ -210,13 +214,17 @@ public class ExerciseTracker extends Fragment {
         return hours + minutes + seconds;
     }
 
+    // Perform setup for the single start/stop button.
     private void enableButtons() {
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity(),GpsService.class);
+                Intent i = new Intent(getActivity(),GpsDataRetrieval.class);
 
+                // If the timer is not running - start the timer.
+                // Begin collecting GPS data.
+                // Change button text to stop.
                 if (!running) {
                     getActivity().startService(i);
                     startTime = System.currentTimeMillis();
@@ -224,10 +232,16 @@ public class ExerciseTracker extends Fragment {
                     button.setText(R.string.runtracker_stop_button);
                     running = true;
                 }
+                // If the timer is running - stop the timer.
+                // Stop collecting GPS data.
+                // Change button text to start.
                 else {
                     getActivity().stopService(i);
                     timerHandler.removeCallbacks(timerRunnable);
 
+                    // If not enough data points
+                    // Show toast with message
+                    // Reset the activity
                     if (dataPoints < 13) {
                         resetActivity();
 
@@ -238,9 +252,12 @@ public class ExerciseTracker extends Fragment {
 
                     String time = timerTextView.getText().toString();
                     long timeInSeconds = getSecondsFromTime(time);
-                    // if time < X seconds don't bother analysing
+                    // If time < X seconds don't bother analysing.
+                    // Otherwise create the analysis activity.
                     if (timeInSeconds > SHORTEST_EXERCISE_TIME) {
                         calculateExerciseInfo(timeInSeconds);
+
+                        // Make sure the user isn't cheating (average speed is far too fast)
                         if (averageSpeed > MAX_AVERAGE_SPEED) {
                             String msg = "Your average speed was too fast for a " + EXERCISE_NAME + "!";
                             createToast(msg);
@@ -248,6 +265,7 @@ public class ExerciseTracker extends Fragment {
                         else {
                             int points = calculatePoints();
 
+                            // Determine whether to send points to DB now or later.
                             if (isNetworkAvailable()) {
                                 postPointToDataBase(points);
                             }
@@ -274,6 +292,7 @@ public class ExerciseTracker extends Fragment {
         });
     }
 
+    // Create a toast with provided message.
     private void createToast(String message) {
         Context context = getActivity().getApplicationContext();
         int duration = Toast.LENGTH_SHORT;
@@ -282,6 +301,7 @@ public class ExerciseTracker extends Fragment {
         toast.show();
     }
 
+    // Reset the activity make to its default state. Reset all buffers and variables.
     private void resetActivity() {
         running = false;
         timerHandler.removeCallbacks(timerRunnable);
@@ -300,11 +320,13 @@ public class ExerciseTracker extends Fragment {
         lowestSpeed = 90000000;
     }
 
+    // Calculate the points a user should receive once they finish exercising.
     private int calculatePoints() {
         int temp = (int)(distance / averageSpeed);
         return temp / 20;
     }
 
+    // Update the points in the database for this user.
     private void postPointToDataBase(int points) {
         BackgroundDataBaseTasks tempTask = new BackgroundDataBaseTasks(backgroundTask.ctx);
 
@@ -320,6 +342,7 @@ public class ExerciseTracker extends Fragment {
         tempTask.execute(method,score,id);
     }
 
+    // Make sure the phone allows GPS location access.
     private boolean verifyRuntimePermissions() {
         if (Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -332,6 +355,7 @@ public class ExerciseTracker extends Fragment {
         return false;
     }
 
+    // Create the analysis activity. Pass specific data to it.
     protected void createAnalysisActivity(int points) {
         double[] newAlts = new double[altitudes.size()];
         for (int i = 0; i < newAlts.length; i++) {
@@ -356,6 +380,7 @@ public class ExerciseTracker extends Fragment {
         ExerciseTracker.this.startActivity(myIntent);
     }
 
+    // Check if the phone currently has internet access.
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();

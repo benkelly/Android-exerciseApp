@@ -107,20 +107,12 @@ public class AchievementActivity extends AppCompatActivity implements FriendsCal
         button = (Button) findViewById(R.id.button);
         shareDialog = new ShareDialog(this);
         button.setOnClickListener(new View.OnClickListener() {
-                                      @Override
-                                      public void onClick(View view) {
-
-                                          builder.text("Hey everyone! My score is now "+score+", on ...");
-                                          builder.show();
-                                          /*Intent share = new Intent(Intent.ACTION_SEND);
-                                          share.putExtra(Intent.EXTRA_TEXT, "text");
-                                          startActivity(Intent.createChooser(share, "Share this via"));*/
-
-                                          /*ShareLinkContent content = new ShareLinkContent.Builder()
-                                          .setContentUrl(Uri.parse("https://twitter.com/Renvark/status/913042367904718848")).setContentDescription("test").build();
-                                          shareDialog.show(content);*/
-                                      }
-                                  }
+            @Override
+            public void onClick(View view) {
+                builder.text("Hey everyone! My score is now "+score+", on Active Go!");
+                builder.show();
+            }
+        }
         );
 
     }

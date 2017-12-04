@@ -82,8 +82,9 @@ public class ExerciseAnalysis extends AppCompatActivity {
         createAltitudeGraph(lowestAltitude, highestAltitude, altitudes);
     }
 
+    // Create the speed graph seen in analysis.
     private void createSpeedGraph(double lowestSpeed, double highestSpeed, double[] speeds) {
-        // average the speeds
+        // Average the speeds over 5 points. This creates a smoother graph.
         ArrayList<Double> newSpeeds = new ArrayList<>();
         for (int i = 0; i < speeds.length; i+=5) {
             if (i+4 > speeds.length-1) break;
@@ -102,6 +103,7 @@ public class ExerciseAnalysis extends AppCompatActivity {
         ArrayList<Entry> yAxis = new ArrayList<>();
         double speedStep = (highestSpeed - lowestSpeed) / stepCount;
 
+        // Create y and x axis data.
         for (float i = (float)lowestSpeed; i < highestSpeed; i += speedStep) {
             if (count >= xAxis.length || count >= newSpeeds.size()) break;
 
@@ -125,6 +127,7 @@ public class ExerciseAnalysis extends AppCompatActivity {
         speedGraph.setData(new LineData(temp));
     }
 
+    // Create the altitude graph as seen in the analysis.
     private void createAltitudeGraph(double lowestAltitude, double highestAltitude, double[] altitudes) {
         int count = 0;
         int stepCount = 20;
@@ -132,9 +135,10 @@ public class ExerciseAnalysis extends AppCompatActivity {
         ArrayList<Entry> yAxis = new ArrayList<>();
         double altStep = (highestAltitude - lowestAltitude) / stepCount;
 
+        // Create x and y axis values.
+        // No need to average points since altitude never changes drastically in short spaces of time.
         for (float i = (float)lowestAltitude; i < highestAltitude; i += altStep) {
             if (count >= xAxis.length || count >= altitudes.length) break;
-
             xAxis[count] = "";
             yAxis.add(new Entry(count, (float)altitudes[count++]));
         }
